@@ -3,13 +3,16 @@
     font-size:13px !important;
 
 }
-
+ body{
+        background-color:#f6f5f5;
+    }    
+    
 .header{text-align:center; height:30px; width:100%; font-size: 18px !important; }
 /*sobreescribo la clase conteiner del cssgrid1140 para tener mas padding*/
 .container {padding-left: 50px !important;padding-right: 50px !important;}
 
 /* Estilo para los componetes principales de la maquetacion de la plantilla*/
-#header{margin-top: 10px !important; margin-bottom: 15px !important; height:100px !important;}
+#header{margin-top: 10px !important; margin-bottom: 15px !important; height:100px !important; background-image:url(../images/bann_center.png)!important; background-repeat: no-repeat; background-size: 100% 100%;}
 #titulo_pag{ width: 99.9% !important; height: 40px; margin-top: 15px;}
 .label_titulo{ margin-top: 5px; font-size: 20px !important;}
 #content{}
@@ -17,6 +20,7 @@
 .readonly{
     color:#A19B9E;
 }
+.user_lb{ margin-top: 8px;}
 .paddleft5{ padding-left: 6px;}
 /*Tamaño de la imagen de usuario en la barra de perfil*/
 .img_user{
@@ -96,6 +100,13 @@
 #footer{
     margin-bottom:50px !important;
 }
+#foot_lb{
+    margin-top: 10px;
+    font-weight: lighter;
+    color:#666666;
+    font-size: 5px;
+}
+
 .hide{
     display: none;
 }

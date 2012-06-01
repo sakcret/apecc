@@ -4,13 +4,14 @@
         <base href= "<?php echo $this->config->item('base_url'); ?>">
         <title>APECC</title>
         <meta name="author" content="CGT">
+        <link rel="shortcut icon" href="./images/favicon.ico">
         <link rel="stylesheet" href="./css/jquery-ui/demos.css">
         <link rel="stylesheet" href="./css/jquery-ui/jquery-ui-1.8.20.custom.css">
         <link rel="stylesheet" href="./css/jquery-ui/jquery.ui.base.css">
         <link rel="stylesheet" href="./css/extensiones_jqueryui.css">
         <link rel="stylesheet" href="./css/estilo_gral.css" type="text/css"/>
         <link rel="stylesheet" href="./css/cssgrid1140/1140.css" type="text/css"/>
-        <script type="text/javascript" language="javascript" src="./js/jquery-1.7.1.js"></script>
+        <script type="text/javascript" language="javascript" src="./js/jquery-1.7.2.js"></script>
         <script type="text/javascript" language="javascript" src="./js/datatables/jquery.dataTables.js"></script>
         <!--jquery ui-->
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.effects.js"></script>
@@ -22,7 +23,7 @@
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.dialog.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.slider.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.tabs.js"></script>
-        <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.datepicker1.js"></script>
+        <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.datepicker.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.progressbar.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.menu.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.menubar.js"></script>
@@ -30,7 +31,6 @@
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.checkbox.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.radiobutton.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.popup.js"></script>
-        <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.mask.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.spinner.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.tooltip.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.selectmenu.js"></script>
@@ -49,7 +49,11 @@
                     <a href="http://www.enable-javascript.com/es/" target="_blank"> instrucciones para habilitar JavaScript en tu navegador web</a>.
                     <hr></h1>
             </noscript>
-            <div id="header" class="boxshadow ui-widget-header header ui-corner-all twelvecol last"><!--div align="center" style=" color:#edf1fc; text-shadow: 6px 6px 6px #000; font-size: 65px !important;">SEQUEL-REPO</div--></div> 
+            <div id="header" class="boxshadow ui-widget-header header ui-corner-all twelvecol last">
+                  <img align="left" style=" margin-left: 15px;" src="./images/BANNER_APECC_2.png">
+                <img align="right" style=" margin-right: 15px;" src="./images/logo-uv.png">
+                <img align="right"  src="./images/BANNER_APECC.png">
+            </div> 
             <div id="titulo_pag"class="twelvecol ui-widget-header header ui-corner-top boxshadow">
                 <label id="titulo_ventana" class=""></label>                
             </div>
@@ -58,10 +62,10 @@
                 <div id="dialog-aux" class="hide"></div> <!--Div auxilar donde se crearan los mensajes en caso de que mensajes este ocupado-->
                 <div class="row">
                     <div class="threecol"></div>
-                    <div align="center" class="sixcol">
+                    <div id="banner" align="center" class="sixcol">
                         <br>
-                        <div class="ui-widget-header ui-corner-top height_widget"><h1 style=" margin-top: 5px;">Ingreso al sistema</h1></div>
-                        <div class="ui-widget-content ui-corner-bottom">
+                        <div class="ui-widget-header ui-corner-top height_widget boxshadowround"><h1 style=" margin-top: 5px;">Ingreso al sistema</h1></div>
+                        <div class="ui-widget-content ui-corner-bottom boxshadowround">
                             <p class="tips readonly">Proporciona usuario y contrase&ntilde;a para entrar al sistema.</p><br>
                             <fieldset class="none" style="display: inline;">
                                 <label style=" font-weight: bolder;" for="usuario">Usuario*:</label>
@@ -77,7 +81,16 @@
                     <div class="threecol last"></div>
                 </div>
             </div> 
-            <div id="footer" class="twelvecol last ui-widget-header ui-corner-bottom boxshadow" style="height:70px"></div>
+            <div id="footer" class="twelvecol last ui-widget-header ui-corner-bottom boxshadow" style="height:70px">
+                <div align="center" id="foot_lb">
+                    Automatizaci&oacute;n de Procesos en el Centro de Computo (APECC)<br>
+                    Proyecto realizado para la facultad de Edtad&iacute;stica e Inform&aacute;tica de la UNIVERSIDAD VERACRUZANA<br>
+                    Jos&eacute; Adrian Ruiz Carmona
+                    &reg; <?php 
+                    setlocale(LC_TIME, 'Spanish');
+                    echo date("F")." ".date("Y");?>
+                </div>
+            </div>
         </div>
 </html>
 <script type="text/javascript" charset="UTF-8">
@@ -98,9 +111,8 @@
             if ( bValid ) {
                 var respuesta = ajax_peticion("index.php/acceso/acceso_sistema","usuario="+usuario.val()+"&pass="+pass.val());
                 if (respuesta!='no'){
-                 redirect_to('usuarios');
-                    //if(respuesta=='A'){redirect_to('proyectos_admin'); }else{redirect_to('proyectos?p='+$( "#combobox" ).val()+'&np='+$( ".ui-autocomplete-input" ).val());} 
-                }else{
+                 redirect_to('inicio');
+                  }else{
                     updateTips("Usuario y/o Contrase&ntilde;a incorrecto(s)",tips );
                 }
             }

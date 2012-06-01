@@ -17,9 +17,9 @@ echo '</style>';
 <div id="dialog-elimina" title="Eliminar Actividad" style="display:none;">
     <p><span  style="float:left; margin:0 7px 20px 0;"><img src="./images/msg/warning.png"/></span>
         &nbsp;&nbsp;El actividad se borrar&aacute; permanentemente.<hr class="boxshadowround">
-        <b>Nota:&nbsp;</b>Al hacer esto tambi&eacute;n se eliminar&aacute;n las asociaciones de catedraticos de esta actividad, de igual forma 
-        las reservaciones fijas asignadas a cada catedr&aacute;tico ser&aacute;n eliminadas.
-        <br><b>¿A&uacute;n as&iacute; Deseas Continuar?</b></p>
+    <b>Nota:&nbsp;</b>Al hacer esto tambi&eacute;n se eliminar&aacute;n las asociaciones de catedraticos de esta actividad, de igual forma 
+    las reservaciones fijas asignadas a cada catedr&aacute;tico ser&aacute;n eliminadas.
+    <br><b>¿A&uacute;n as&iacute; Deseas Continuar?</b></p>
 </div>
 <div id="f_agregar_actividad" title="Agregar Actividad" style="display:none;">
     <p class="form_tips">Los campos marcados con * son obligatorios.</p>
@@ -239,6 +239,12 @@ echo '</style>';
                 </tr>
             </tfoot>
         </table> 
+    <div class="ui-widget-content ui-corner-all" style="margin-top: 8px; padding: 5px;"> 
+        <p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+            <strong>Importante !</strong> : <blockquote style="margin-left: 20px; margin-right: 20px;"><br>1. Sino se asigna la actividad a un Catedr&aacute;tico, esta no aparecer&aacute; como reservaci&oacute;n fija.<br>
+            2. La fecha de Inicio y fin de las actividades son determinadas por el periodo en el que se encuentran, cada cambio de periodo ser&aacute;n actualizadas.(La fecha de inicio puede variar si en el trancurso del periodo es agregada una actividad)</blockquote>
+        </p>
+    </div>
     </div>
 </div>
 <br/>
@@ -903,7 +909,7 @@ echo '</style>';
         width: 80%;
     }
 </style>
-<?php echo '<style type="text/css">'.$permisos.'</style>'; ?>
+<?php echo '<style type="text/css">' . $permisos . '</style>'; ?>
 
 
 

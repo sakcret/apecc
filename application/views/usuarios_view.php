@@ -186,37 +186,39 @@
                 </tr>
             </table>
         </div>
-        <table cellpadding="0" cellspacing="0" border="0" class="display" id="dtusuarios">
-            <thead>
-                <tr>
-                    <th width="8%">Login</th>
-                    <th width="10%">Matricula</th>
-                    <th width="26%">Nombre completo</th>                
-                    <th width="26%">Tipo de Usuario</th>
-                    <th width="10%">Fecha de creaci&oacute;n</th>
-                    <th width="10%">Fecha de expiraci&oacute;n</th>
-                    <th width="5%">Estatus</th>
-                    <th id="opciones_" width="5%" >Opciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td colspan="5" class="dataTables_empty">Cargando datos del servidor...</td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <th>Login</th>
-                    <th>Matricula</th>
-                    <th>Nombre completo</th>  
-                    <th>Tipo de Usuario</th>
-                    <th>Fecha de creaci&oacute;n</th>
-                    <th>Fecha de expiraci&oacute;n</th>
-                    <th>Estatus</th>
-                    <th>Opciones</th>
-                </tr>
-            </tfoot>
-        </table><br/>
+        <div id="tabla_dt">
+            <table cellpadding="0" cellspacing="0" border="0" class="display" id="dtusuarios">
+                <thead>
+                    <tr>
+                        <th width="8%">Login</th>
+                        <th width="10%">Matricula</th>
+                        <th width="26%">Nombre completo</th>                
+                        <th width="26%">Tipo de Usuario</th>
+                        <th width="10%">Fecha de creaci&oacute;n</th>
+                        <th width="10%">Fecha de expiraci&oacute;n</th>
+                        <th width="5%">Estatus</th>
+                        <th id="opciones_" width="5%" >Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="5" class="dataTables_empty">Cargando datos del servidor...</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Login</th>
+                        <th>Matricula</th>
+                        <th>Nombre completo</th>  
+                        <th>Tipo de Usuario</th>
+                        <th>Fecha de creaci&oacute;n</th>
+                        <th>Fecha de expiraci&oacute;n</th>
+                        <th>Estatus</th>
+                        <th>Opciones</th>
+                    </tr>
+                </tfoot>
+            </table><br/>
+        </div>
     </div>
 </div>
 <div class="spacer"></div>
@@ -701,7 +703,6 @@
                 mensaje($( "#mensaje" ),'No ha selecionado un usuario  ! ','./images/msg/warning.png','Selecciona un usuario por favor.','');
             }
         } );
-        
     });
 </script>
 <style type="text/css">    
@@ -715,6 +716,12 @@
     #tipo_u,#m_tipo_u{width: 400px;}
     .ui-selectmenu{width: 96% !important;}
 </style>
-<?php echo '<style type="text/css">'.$permisos.'</style>'; ?>
+<?php
+if ($permisos == '') {
+    redirect('acceso/acceso_home/inicio');
+} else {
+    echo '<style type="text/css">' . $permisos . '</style>';
+}
+?>
 <br>
 

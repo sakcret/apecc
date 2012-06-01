@@ -59,6 +59,14 @@ $(function() {
         redirect_to('reportes_per');
     }
     );
+    $("#nav_su").click(function(){
+        redirect_to('usuarios_sistema');
+    }
+    );
+    $("#nav_sc").click(function(){
+        redirect_to('configura_sistema');
+    }
+    );
     $("#refresh").click(function(){
         window.location.reload();
     }
@@ -102,6 +110,13 @@ $(function() {
         redirect_to('help');
     }
     );     
+        $('#nav_ad').click(function(){
+            mensaje($( "#mensaje" ),'Acerca de APECC','./images/BANNER_APECC.png"'
+            ,''
+            ,'<br><br><br><b>APECC v1.0<br>Licenciado bajo GPL v2</b><br><hr class="boxshadowround"><center>UNIVERSIDAD VERACRUZANA<br>'+
+            'Facultad de Estad&iacute;stica e Inform&aacute;tica<br>Jos&eacute; Adrian Ruiz Carmona<br>sakcret@gmail.com<br></center>'+
+            '<hr class="boxshadowround"><span style="font-size: 10px !important;">Proyecto Desarrollado a cargo de:<br> &nbsp;&nbsp;&nbsp;- MCC Fredy Castañeda Sánchez<br>&nbsp;&nbsp;&nbsp;- LI Martha Elizabet Domínguez Bárcenas<br>Idea original: Issac Salazar Herrera</span>',400,false);
+        });
     //menu principal
     $("#ulMenu").menubar({
         menuIcon: true,

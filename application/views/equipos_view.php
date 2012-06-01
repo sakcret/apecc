@@ -659,6 +659,10 @@
         height: 20px;
     }
 </style>
-<?php echo '<style type="text/css">'.$permisos.'</style>'; ?>
-
-
+<?php
+if ($permisos == '') {
+    redirect('acceso/acceso_home/inicio');
+} else {
+    echo '<style type="text/css">' . $permisos . '</style>';
+}
+?>

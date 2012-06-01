@@ -37,15 +37,24 @@
 */
 
 $config['fecha_periodo_inicio']	= '2012-01-01';
-$config['fecha_periodo_fin']	= '2012-06-30';
+$config['fecha_periodo_fin']	= '2012-08-30';
 $config['actualizacion_cache']	= FALSE;
 $config['costoxhora']	= 1.5;
-$config['tiempo_recarga_rt']	= 1.5;
 $config['respaldos_db']	= TRUE;
 $config['formato_respaldo_db']	= "csv";
 $config['ver_detalles_actdb']	= TRUE;
 $config['ver_menu_lt']	= TRUE;
 
+/*
+ * -------------------------------------------------------------------
+|   ACERCA DEL SISTEMA
+|   -------------------------------------------------------------------
+ */
+$config['sis_encargados_cc']	=  array("Jefe del Centro de Computo: LI Martha Elizabet Domínguez Bárcenas","MCC Fredy Castañeda Sánchez"); 
+$config['sis_desarralladores']	=   array("Desarrollador: José Adrian Ruiz Carmona","Idea original: Issac Salazar Herrera"); 
+$config['sis_mantenimiento']	=   array("",""); 
+$config['sis_contacto']	=   array("Correo: sakcret_arte8@hotmail.com"); 
+$config['sis_version']	=   "1.0"; 
 /*
 | -------------------------------------------------------------------
 | PERMISOS DEL SISTEMA
@@ -63,31 +72,43 @@ $config['ver_menu_lt']	= TRUE;
  *      w= Permiso para abc de software a los equipos (representado en las vistas(html-css) con la clase prm_w)
  */
 $config['prm_permisos']=array('t','v','a','b','c','s','w');
+$config['desc_permisos']="A = Agregar registros(altas).<br>
+                                         B = Eliminar registros(bajas).<br>
+                                         C = Cambiar registros(cambios).<br>
+                                         S = Asignación de materias a catedráticos y/o Asociación de software a grupos.<br>
+                                         W = abc de software a los equipos";
 
 /* Claves de permiso para cada controlador
-//!!! IMPORTANTE: no cambiar estos parametros de configuracion a menos que este seguro de lo que hace ya que esto 
+//!!! IMPORTANTE: no cambiar estos parametros de configuracion a menos que este seguro de lo que hace ya que esto las primeras 2 letar de la clave
+ * no pueden repetirse ya que identifican un conjunto de elementos del sistema pr ejemplo: 'rs' para reservaciones y la tercera letra para
+ * representar los subconjuntos por ejemplo 'rsf' reservaciones fijas o 'rst' reservaciones temporaneas
 afectará directamente a los usuarios que tengan acceso al controlador que desea modificar un caso viable seria la eliminacion de modulos o al agrearlos
 */
 $config['clvp_actividades']= 'act';
-$config['clvp_equipos_software']='esw';
+$config['clvp_equipos_software']='eqs';
 $config['clvp_equipos']	= 'equ';
-$config['clvp_reportes']= 'rep';
+$config['clvp_ubicacion_equipos']='eqb';
+$config['clvp_reportes']= 'rpg';
+$config['clvp_reportes_per']= 'rpp';
 $config['clvp_reservaciones_fijas']= 'rsf';
 $config['clvp_reservaciones_salas']= 'rss';
-$config['clvp_reservaciones_termporaneas']='rst';
+$config['clvp_reservaciones_temporaneas']='rst';
 $config['clvp_software']='swr';
-$config['clvp_ubicacion_equipos']='ueq';
 $config['clvp_usuarios']='usu';
+$config['clvp_sistema_usuarios']='siu';
+$config['clvp_sistema_config']='sic';
 
 /* 
  * Definición de permisos para roles predereminados
  */
 $config['roles']=array( 
-    array('rol'=>'Administador','clave'=>'A','permisos'=>'usu>t|act>t|esw>t|equ>t|rep>t|rsf>t|rss>t|rst>t|swr>t|ueq>t|usu>t'),
-    array('rol'=>'Encargado del Centro de Computo','clave'=>'C','permisos'=>'usu>t|act>t|esw>t|equ>t|rep>t|rsf>t|rss>t|rst>t|swr>t|ueq>t|usu>t'),
-    array('rol'=>'Servicio Social','clave'=>'I','permisos'=>'usu>t|act>t|esw>t|equ>t|rep>t|rsf>t|rss>t|rst>t|swr>t|ueq>t|usu>t'),
-    array('rol'=>'Academico','clave'=>'M','permisos'=>'usu>t|act>t|esw>t|equ>t|rep>t|rsf>t|rss>t|rst>t|swr>t|ueq>t|usu>t'),
-    array('rol'=>'Invitado','clave'=>'I','permisos'=>'usu>t|act>t|esw>t|equ>t|rep>t|rsf>t|rss>t|rst>t|swr>t|ueq>t|usu>t')
+    'A'=>array('rol'=>'Administador','clave'=>'A','permisos'=>'usu>t|act>t|eqs>t|equ>t|eqb>t|rpg>t|rpp>t|rep>t|rsf>t|rss>t|rst>t|swr>t|uqs>t|siu>t|sic>t'),
+    'C'=>array('rol'=>'Encargado del Centro de Computo','clave'=>'C','permisos'=>'usu>t|act>t|eqs>t|equ>t|eqb>t|rpg>t|rpp>t|rep>t|rsf>t|rss>t|rst>t|swr>t|uqs>t'),
+    'S'=>array('rol'=>'Servicio Social','clave'=>'S','permisos'=>'usu>ac|act>v|esw>t|equ>t|rep>t|rsf>t|rss>t|rst>t|swr>abc|ueq>t'),
+    'M'=>array('rol'=>'Academico','clave'=>'M','permisos'=>'usu>v|act>v|eqs>t|equ>v|eqb>t|rpg>t|rpp>t|rep>t|rsf>t|rss>t|rst>t|swr>t|uqs>t'),
+    'I'=>array('rol'=>'Invitado','clave'=>'I','permisos'=>'usu>v|act>v|eqs>v|equ>v|eqb>v|rpg>v|rpp>v|rep>v|rsf>v|rss>v|rsv>v|swr>v|uqs>v'),
+    'L'=>array('rol'=>'Solo Lectura','clave'=>'L','permisos'=> 'usu>v|act>v|eqs>v|equ>v|eqb>v|rpg>v|rpp>v|rep>v|rsf>v|rss>v|rsv>v|swr>v|uqs>v')
     );
-$config['rol_sololectura']= 'usu>v|act>v|esw>v|equ>v|rep>v|rsf>v|rss>v|rst>v|swr>v|ueq>v|usu>v';
+
+
 ?>

@@ -159,6 +159,12 @@ class Actividades_model extends CI_Model {
         $result = $this->db->get();
         return $result;
     }
+    function getActividades_cpt(){
+        $this->db->select("Actividad as actividad");
+        $this->db->from('actividades');
+        $result = $this->db->get();
+        return $result;
+    }
 
 }
 

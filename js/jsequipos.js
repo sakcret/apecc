@@ -30,9 +30,11 @@ function software_equipo(ns){
     var html='<div id="accordion" class="boxshadowround ui-corner-all">';
     var respuesta = ajax_peticion_json(urll,'');
     var sw=sw_equipo(ns),ch='';
-    var i=0,so=respuesta[0].so,sosig='';
+    var i=0,sosig='';
+   
     var b=true;
     if (respuesta!=false&&respuesta!=null){
+        so=respuesta[0].so;
         for (i=0;i<=respuesta.length;i++){
             try{
                 so=respuesta[i].so;
@@ -61,11 +63,12 @@ function software_equipo(ns){
             }
                 
         }
-    }/*else{
-            return null;
-        }*/
-    html+='</div>';
-    $('#sw_equipo').html(html); 
+        html+='</div>';
+        $('#sw_equipo').html(html); 
+    }else{
+        
+    }
+    
 }//
     
 function sos_equipo(ns){
@@ -83,7 +86,7 @@ function sos_equipo(ns){
             return null;
         }
     }                       
-}//
+}
     
 function sw_equipo(ns){
     var urll='index.php/equipo_software/getSwEquipo/'+ns;
@@ -98,7 +101,7 @@ function sw_equipo(ns){
         return null;
     }  
                                 
-}//
+}
 
 function getStringEdo(edo){
     var estado='';

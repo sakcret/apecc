@@ -7,7 +7,7 @@ class Equipo_software_model extends CI_Model {
         $this->load->database();
     }
 
-    function getSoftwareEquipo($equipo){
+    function getSoftwareEquipo($equipo) {
         $this->db->select("software.idSoftware as id");
         $this->db->select("software.software as nombre");
         $this->db->select("software.descripcion");
@@ -60,6 +60,7 @@ class Equipo_software_model extends CI_Model {
         }
         return $result;
     }
+
     function agrega_sw($numserie, $sw) {
         $this->db->trans_begin();
         $this->db->where('NumeroSerie', $numserie);
@@ -79,6 +80,12 @@ class Equipo_software_model extends CI_Model {
             $result = TRUE;
         }
         return $result;
+    }
+
+    function getGruposSo($so) {
+        $this->db->select('idGrupo,nombre');
+        $this->db->where('idSistemaOperativo', $so);
+        return $this->db->get('grupo_software');
     }
 
 }

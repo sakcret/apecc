@@ -6,11 +6,21 @@ if (!defined('BASEPATH'))
 class Inicio extends CI_Controller {
 
     public function index() {
-        // $this->load->model("inicio_model");
-        $data['titulo_pag'] = "INICIO - CCFEI";
+        $this->load->library("utl_apecc");
+        $this->load->library('table');
+        $this->load->model('inicio_model');
+         $this->load->model("reportes_model");
+        $this->load->model("salas_model");
+        $login = $this->session->userdata('login');
+        $permisos = $this->session->userdata('puedo');
+        if (!$login) {
+            redirect('acceso/acceso_denegado');
+        }
+        $data['titulo_pag'] = "INICIO - APECC (CCFEI)";
         $contenido['include'] = '<script type="text/javascript" language="javascript" src="./js/highcharts/highcharts.js"></script>' . PHP_EOL .
                 '<script type="text/javascript" language="javascript" src="./js/highcharts/modules/exporting.js"></script>' . PHP_EOL;
-
+        $contenido['datos_salas'] = $this->reportes_model->datosReserv();
+        $contenido['datos_rsf']=  $this->inicio_model->getActividadesHoy();
         $data['contenido'] = $this->load->view('inicio_view', $contenido, true);
         $this->load->view('plantilla', $data);
     }

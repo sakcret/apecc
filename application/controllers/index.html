@@ -8,3 +8,701 @@
 
 </body>
 </html>
+<?php
+$resrv_ciclo = array();
+$resrv_sem = array();
+$resrv_mes = array();
+$resrv_mes_sem = array();$hrs=array(); 
+foreach ($datos_salas->result() as $row) {
+    $resrv_ciclo[$row->fecha][$row->sala] = array('sala' => $row->sala, 'horas' => $row->horas);
+}
+//print_r($resrv_ciclo);
+//echo date('N') . '-' . date('Y') . '-' . date('m') . '-' . date('d');
+$a = date('Y');
+$m = date('m');
+$d = date('d');
+$ds = date('N');
+$hoy = new DateTime(date('Y-m-d'));
+$fl = $this->utl_apecc->getDiaLunesSemana($hoy);
+
+//obtener registros por mes
+$semana = 1;
+
+ 
+foreach ($resrv_ciclo as $k => $v) {
+    echo '<br>' . substr($k, 8, 2) . '/' . substr($k, 5, 2) . '/' . substr($k, 0, 4);
+    if ($a == substr($k, 0, 4)) {
+        //si el mes es igual al mes actual
+        if ($m == substr($k, 5, 2)) {
+            $resrv_mes[$k] = $v;
+            $sem_tmp = '';
+            $f_temp = new DateTime($k);//obtengo la fecha del indice $k
+            $f_temp_sig = new DateTime($k);//obtengo la fecha del indice $k
+            $dia = $f_temp->format('d');//obtengo dia de la fecha del indice $k
+            $semananum = $f_temp->format('W');//obtengo la semana del indice $k
+            date_add($f_temp_sig, date_interval_create_from_date_string('1 days'));
+            $semananum_sig = $f_temp_sig->format('W');
+            echo 'semana'.$semananum;
+            //echo 'semanasig'.$semananum_sig;
+            if ($semananum!=$semananum_sig) {
+                echo 'semana nueva despues';
+                
+            }
+          /* if ($dia == 1) {
+                
+                foreach ($salas->result() as $s) {
+                    if (array_key_exists($s->idSala, $v)) {
+                        $resrv_mes_sem[$semana][$s->idSala] = array('sala' => $s->idSala, 'horas' =>$hrs[$s->idSala]);
+                    }
+                }
+                $semana++;
+                //$hrs=array();
+            } else {
+                echo 'semana' . $semana;
+
+                foreach ($salas->result() as $s) {
+                    if (array_key_exists($s->idSala, $v)) {
+                        $hrs[$s->idSala] = $v[$s->idSala]['horas'];
+                        $sem_tmp = $k;
+                        echo ' --' . $hrs[$s->idSala] . '--';
+                    } else {
+                        //echo ' <td class="ui-widget-content">0</td>';
+                    }
+                }
+            }*/
+            
+            echo '<br>dia-' . $dia;
+            echo '<br>hoy-' . $d;
+            echo '<br>fl-' . $fl->format('d');
+            if (($dia <= $d) && ($dia >= $fl->format('d'))) {
+                $resrv_sem[$k] = $v;
+            }
+        }
+    }
+}
+
+echo '<br>' . print_r($resrv_mes_sem). '<br>';
+
+
+?>
+<script type="text/javascript">
+    $(document).ready(function() {
+        Highcharts.visualize = function(table, options) {
+            // the categories
+            options.xAxis.categories = [];
+            $('tbody th', table).each( function(i) {
+                options.xAxis.categories.push(this.innerHTML);
+            });
+
+            options.series = [];
+            $('tr', table).each( function(i) {
+                var tr = this;
+                $('th, td', tr).each( function(j) {
+                    if (j > 0) { // skip first column
+                        if (i == 0) { // get the name and init the series
+                            options.series[j - 1] = {
+                                name: this.innerHTML,
+                                data: []
+                            };
+                        } else { // add values
+                            options.series[j - 1].data.push(parseFloat(this.innerHTML));
+                        }
+                    }
+                });
+            });
+
+            var chart = new Highcharts.Chart(options);
+        }
+
+        var table = document.getElementById('tb_resxmesact'),
+        options = {
+            chart: {
+                renderTo: 'rep_gral_hrs',
+                defaultSeriesType: 'column'
+            },
+            title: {
+                text: 'Reporte Mensual de uso del Centro de Computo'
+            },
+            xAxis: {
+                labels: {
+                    rotation: -45,
+                    align: 'right',
+                    style: {
+                        font: 'normal 13px Verdana, sans-serif'
+                    }
+                }
+            },
+            yAxis: {
+                title: {
+                    text: 'Horas'
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                    return '<b>Sala: '+ this.series.name +'</b><br/>'+
+                        '<b>Horas:</b>'+this.y +' <b>Día:</b> '+ this.x.toLowerCase();
+                }
+            }
+        };
+        
+        var options_area = {
+            chart: {
+                renderTo: 'rep_gral_hrs_area',
+                defaultSeriesType: 'area'
+            },
+            title: {
+                text: 'Reporte Mensual de uso del Centro de Computo'
+            },
+            xAxis: {
+                labels: {
+                    rotation: -45,
+                    align: 'right',
+                    style: {
+                        font: 'normal 13px Verdana, sans-serif'
+                    }
+                }
+            },
+            yAxis: {
+                title: {
+                    text: 'Horas'
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                    return '<b>Sala: '+ this.series.name +'</b><br/>'+
+                        '<b>Horas:</b>'+this.y +' <b>Día:</b> '+ this.x.toLowerCase();
+                }
+            }
+        };
+
+        Highcharts.visualize(table, options);
+        Highcharts.visualize(table, options_area);
+        
+        /*
+         *Graficas para reporte por ciclo
+         */
+        var table = document.getElementById('tb_repcicloact'),
+        options = {
+            chart: {
+                renderTo: 'rep_ciclo_hrs',
+                defaultSeriesType: 'column'
+            },
+            title: {
+                text: 'Resumen de uso del Centro de computo en el Ciclo Actual'
+            },
+            xAxis: {
+                labels: {
+                    rotation: -45,
+                    align: 'right',
+                    style: {
+                        font: 'normal 13px Verdana, sans-serif'
+                    }
+                }
+            },
+            yAxis: {
+                title: {
+                    text: 'Horas'
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                    return '<b>Sala: '+ this.series.name +'</b><br/>'+
+                        '<b>Horas:</b>'+this.y +' <b>Día:</b> '+ this.x.toLowerCase();
+                }
+            }
+        };
+        
+        var options_area = {
+            chart: {
+                renderTo: 'rep_ciclo_hrs_area',
+                defaultSeriesType: 'area'
+            },
+            title: {
+                text: 'Resumen de uso del Centro de computo pos Sala en el mes'
+            },
+            xAxis: {
+                labels: {
+                    rotation: -45,
+                    align: 'right',
+                    style: {
+                        font: 'normal 13px Verdana, sans-serif'
+                    }
+                }
+            },
+            yAxis: {
+                title: {
+                    text: 'Horas'
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                    return '<b>Sala: '+ this.series.name +'</b><br/>'+
+                        '<b>Horas:</b>'+this.y +' <b>Día:</b> '+ this.x.toLowerCase();
+                }
+            }
+        };
+
+        Highcharts.visualize(table, options);
+        Highcharts.visualize(table, options_area);
+        
+        /*
+         *Graficas para reporte por semana
+         */
+        var table = document.getElementById('tb_repsem'),
+        options = {
+            chart: {
+                renderTo: 'rep_sem_hrs',
+                defaultSeriesType: 'column'
+            },
+            title: {
+                text: 'Reporte Semanal de uso del Centro de Computo'
+            },
+            xAxis: {
+                labels: {
+                    rotation: -45,
+                    align: 'right',
+                    style: {
+                        font: 'normal 13px Verdana, sans-serif'
+                    }
+                }
+            },
+            yAxis: {
+                title: {
+                    text: 'Horas'
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                    return '<b>Sala: '+ this.series.name +'</b><br/>'+
+                        '<b>Horas:</b>'+this.y +' <b>Día:</b> '+ this.x.toLowerCase();
+                }
+            }
+        };
+        
+        var options_area = {
+            chart: {
+                renderTo: 'rep_sem_hrs_area',
+                defaultSeriesType: 'area'
+            },
+            title: {
+                text: 'Reporte Semanal de uso del Centro de Computo'
+            },
+            xAxis: {
+                labels: {
+                    rotation: -45,
+                    align: 'right',
+                    style: {
+                        font: 'normal 13px Verdana, sans-serif'
+                    }
+                }
+            },
+            yAxis: {
+                title: {
+                    text: 'Horas'
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                    return '<b>Sala: '+ this.series.name +'</b><br/>'+
+                        '<b>Horas:</b>'+this.y +' <b>Día:</b> '+ this.x.toLowerCase();
+                }
+            }
+        };
+
+        Highcharts.visualize(table, options);
+        Highcharts.visualize(table, options_area);
+        
+    });
+
+</script>
+<div class="row1">
+    <div id="accordion_tiporep">
+        <div>
+            <h3><a href="#">Reporte Semanal de uso del Centro de Computo</a></h3>
+            <div class="ui-state-focus">
+                <div id="tab_resumen_horas_mes">
+                    <ul>
+                        <li style="width: 20%"><a  style="width: 90%" href="#tabs-1">Gr&aacute;fico de barras</a></li>
+                        <li style="width: 20%"><a  style="width: 90%" href="#tabs-2">Gr&aacute;fico de &Aacute;rea</a></li>
+                        <li style="width: 20%"><a style="width: 90%" href="#tabs-3">Tabla</a></li>
+                    </ul>
+                    <div Style="height: 450px;" id="tabs-1">
+                        <div  id="rep_sem_hrs" Style="height: 400px !important; overflow: auto !important;" class="boxshadowround ui-corner_all "></div>
+                    </div>
+                    <div Style="height: 450px;" id="tabs-2">
+                        <div  id="rep_sem_hrs_area" Style="height: 400px !important; overflow: auto !important;" class="boxshadowround ui-corner_all "></div>
+                    </div>
+                    <div id="tabs-3" class="ui-state-active">
+                        <div  id="datos_act_asign" class="ui-grid ui-widget ui-widget-content ui-corner-all" >
+                            <div class="ui-grid-header ui-widget-header ui-corner-top" >Resumen de uso del Centro de computo pos Sala en el mes</div>
+                            <table id="tb_repsem" class="ui-grid-content ui-widget-content" style=" width: 100%">
+                                <thead>
+                                    <tr>
+                                        <th class="ui-widget-header">D&iacute;a</th>
+                                        <?php
+                                        $total_hrs_mes = 0;
+                                        foreach ($salas->result() as $v) {
+                                            echo '<th class="ui-widget-header">' . $v->Sala . '</th>';
+                                        }
+                                        ?>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($resrv_sem as $k => $v) { ?>
+                                        <tr>
+                                            <th class="ui-widget-content"><?php
+                                        $ft = new DateTime($k);
+                                        echo $this->utl_apecc->getDiaStr($ft->format('N'));
+                                        ?></th>
+                                                <?php
+                                                foreach ($salas->result() as $s) {
+                                                    if (array_key_exists($s->idSala, $v)) {
+                                                        $hrs = $v[$s->idSala]['horas'];
+                                                        $total_hrs_mes+=$hrs;
+                                                        echo '<td class="ui-widget-content">' . $hrs . '</td>';
+                                                    } else {
+                                                        echo ' <td class="ui-widget-content">0</td>';
+                                                    }
+                                                    ?>
+
+                                            <?php } ?>
+                                        </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                            <div class="ui-grid-footer ui-widget-header ui-corner-bottom ui-helper-clearfix"> 
+                                <div class="ui-widget">
+                                    <div class="ui-state-highlight ui-corner-all" style="padding: 0 .7em;"> 
+                                        <p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+                                            <strong>Total de horas en el mes: </strong> <?php echo $total_hrs_mes; ?>&nbsp; horas.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!--Fin acc1-->
+        <div>
+            <h3><a href="#">Reporte de mes actual</a></h3>
+            <div class="ui-state-focus">
+                <div id="tab_resumen_horas_mes">
+                    <ul>
+                        <li style="width: 20%"><a  style="width: 90%" href="#tabs-1">Gr&aacute;fico de barras</a></li>
+                        <li style="width: 20%"><a  style="width: 90%" href="#tabs-2">Gr&aacute;fico de &Aacute;rea</a></li>
+                        <li style="width: 20%"><a style="width: 90%" href="#tabs-3">Tabla</a></li>
+                    </ul>
+                    <div Style="height: 450px;" id="tabs-1">
+                        <div  id="rep_gral_hrs" Style="height: 400px !important; overflow: auto !important;" class="boxshadowround ui-corner_all "></div>
+                    </div>
+                    <div Style="height: 450px;" id="tabs-2">
+                        <div  id="rep_gral_hrs_area" Style="height: 400px !important; overflow: auto !important;" class="boxshadowround ui-corner_all "></div>
+                    </div>
+                    <div id="tabs-3" class="ui-state-active">
+                        <div  id="datos_act_asign" class="ui-grid ui-widget ui-widget-content ui-corner-all" >
+                            <div class="ui-grid-header ui-widget-header ui-corner-top" >Resumen de uso del Centro de computo pos Sala en el mes</div>
+                            <table id="tb_resxmesact" class="ui-grid-content ui-widget-content" style=" width: 100%">
+                                <thead>
+                                    <tr>
+                                        <th class="ui-widget-header">D&iacute;a</th>
+                                        <?php
+                                        $total_hrs_mes = 0;
+                                        foreach ($salas->result() as $v) {
+                                            echo '<th class="ui-widget-header">' . $v->Sala . '</th>';
+                                        }
+                                        ?>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($resrv_mes as $k => $v) { ?>
+                                        <tr>
+                                            <th class="ui-widget-content"><?php echo $this->utl_apecc->getdate_SQL($k); ?></th>
+                                            <?php
+                                            foreach ($salas->result() as $s) {
+                                                if (array_key_exists($s->idSala, $v)) {
+                                                    $hrs = $v[$s->idSala]['horas'];
+                                                    $total_hrs_mes+=$hrs;
+                                                    echo '<td class="ui-widget-content">' . $hrs . '</td>';
+                                                } else {
+                                                    echo ' <td class="ui-widget-content">0</td>';
+                                                }
+                                                ?>
+
+                                            <?php } ?>
+                                        </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                            <div class="ui-grid-footer ui-widget-header ui-corner-bottom ui-helper-clearfix"> 
+                                <div class="ui-widget">
+                                    <div class="ui-state-highlight ui-corner-all" style="padding: 0 .7em;"> 
+                                        <p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+                                            <strong>Total de horas en el mes: </strong> <?php echo $total_hrs_mes; ?>&nbsp; horas.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!--fin acc2-->
+
+        <div>
+            <h3><a href="#">Reporte de periodo</a></h3>
+            <div class="ui-state-focus">
+
+
+                <div id="tabs_rep1_salas">
+                    <ul>
+
+                        <?php
+                        $numreg = $salas->num_rows() + 1;
+                        $porcentaje = (100 / $numreg) - 0.5;
+                        echo '<li style=" width: ' . $porcentaje . '%"><a style=" width: 90%" href="#tabs-stodas"</a>Todas</li>';
+                        foreach ($salas->result() as $sala) {
+                            echo '<li style=" width: ' . $porcentaje . '%"><a style=" width: 90%" href="#tabs-s' . $sala->idSala . '">' . $sala->Sala . '</a></li>';
+                        }
+                        ?>
+                    </ul>
+                    <div id="tabs-stodas">rrtrttr</div>
+                    <?php
+                    foreach ($salas->result() as $sala) {
+                        ?>
+                        <div id="tabs-s<?php echo $sala->idSala; ?>">
+                            <script type="text/javascript">
+                                var chart;
+                                $(document).ready(function() {
+                               
+                                    chart = new Highcharts.Chart({
+                                        chart: {
+                                            renderTo: 'sala_rep1_<?php echo $sala->idSala; ?>',
+                                            zoomType: 'x',
+                                            spacingRight: 20
+                                        },
+                                        title: {
+                                            text: 'Uso de las sala <?php echo $sala->Sala; ?> en el periodo actual (<?php echo $this->config->item('fecha_periodo_inicio') . ' - ' . $this->config->item('fecha_periodo_fin'); ?>)'
+                                        },
+                                        subtitle: {
+                                            text: document.ontouchstart === undefined ?
+                                                'Para hacer zoom en el gráfico, da click sobre este y sin soltar arrastra hata el completar el subperiodo deseado' :
+                                                'Para hacer zoom en el gráfico, da click sobre este y sin soltar arrastra hata el completar el subperiodo deseado'
+                                               
+                                        },
+                                        xAxis: {
+                                            type: 'datetime',
+                                            maxZoom: 14 * 24 * 3600000, // fourteen days
+                                            title: {
+                                                text: null
+                                            }
+                                        },
+                                        yAxis: {
+                                            title: {
+                                                text: 'Número de Reservaciones'
+                                            },
+                                            min: 0.6,
+                                            startOnTick: false
+                                            //showFirstLabel: false
+                                        },
+                                        tooltip: {
+                                            shared: true
+                                        },
+                                        legend: {
+                                            enabled: false
+                                        },
+                                        plotOptions: {
+                                            area: {
+                                                fillColor: {
+                                                    linearGradient: [0, 0, 0, 300],
+                                                    stops: [
+                                                        [0, Highcharts.getOptions().colors[0]],
+                                                        [1, 'rgba(2,0,0,0)']
+                                                    ]
+                                                },
+                                                lineWidth: 1,
+                                                marker: {
+                                                    enabled: false,
+                                                    states: {
+                                                        hover: {
+                                                            enabled: true,
+                                                            radius: 5
+                                                        }
+                                                    }
+                                                },
+                                                shadow: false,
+                                                states: {
+                                                    hover: {
+                                                        lineWidth: 1
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        series: [
+    <?php
+    $num_reg = $salas->num_rows();
+    $c = 1;
+    $coma = ',';
+    echo '{' . PHP_EOL . '
+            type: \'area\',' . PHP_EOL . 'pointInterval: 24 * 3600 * 1000,' . PHP_EOL . '
+                    pointStart: Date.UTC(2012, 01, 01),pointEnd: Date.UTC(2012, 06, 30),' . PHP_EOL . '
+            name: \'' . $sala->Sala . '\',' . PHP_EOL . '
+                data: [';
+    foreach ($datos_salas_full[$sala->idSala]->result() as $row) {
+        $fecha = $row->fecha;
+        if ($num_reg == $c) {
+            echo '[Date.UTC(' . substr($fecha, 0, 4) . ',' . substr($fecha, 5, 2) . ',' . substr($fecha, 8, 2) . '), ' . $row->cuantas . ']';
+        } else {
+            echo '[Date.UTC(' . substr($fecha, 0, 4) . ',' . substr($fecha, 5, 2) . ',' . substr($fecha, 8, 2) . '), ' . $row->cuantas . '],';
+        }
+    }
+    $c++;
+    echo ']}';
+    ?>                  
+                                        
+                                ]
+                            });
+                        });
+
+                            </script>
+                            <div  class="ui-corner-all boxshadowround" style="width: 80%; height: 500px; margin: 0 auto" id="sala_rep1_<?php echo $sala->idSala; ?>">
+
+                            </div>
+                        </div>
+                    <?php }
+                    ?>
+
+                </div>
+                <br>
+                <div id="tab_resumen_horas_per">
+                    <ul>
+                        <li style="width: 20%"><a  style="width: 90%" href="#tabs-1">Gr&aacute;fico de barras</a></li>
+                        <li style="width: 20%"><a  style="width: 90%" href="#tabs-2">Gr&aacute;fico de &Aacute;rea</a></li>
+                        <li style="width: 20%"><a style="width: 90%" href="#tabs-3">Tabla</a></li>
+                    </ul>
+                    <div Style="height: 450px;" id="tabs-1">
+                        <div  id="rep_ciclo_hrs" Style="height: 400px !important; overflow: auto !important;" class="boxshadowround ui-corner_all "></div>
+                    </div>
+                    <div Style="height: 450px;" id="tabs-2">
+                        <div  id="rep_ciclo_hrs_area" Style="height: 400px !important; overflow: auto !important;" class="boxshadowround ui-corner_all "></div>
+                    </div>
+                    <div id="tabs-3" class="ui-state-active">
+                        <div  id="datos_act_asign" class="ui-grid ui-widget ui-widget-content ui-corner-all" >
+                            <div class="ui-grid-header ui-widget-header ui-corner-top" >Resumen de uso del Centro de computo pos Sala en el mes</div>
+                            <table id="tb_repcicloact" class="ui-grid-content ui-widget-content" style=" width: 100%">
+                                <thead>
+                                    <tr>
+                                        <th class="ui-widget-header">D&iacute;a</th>
+                                        <?php
+                                        $total_hrs_mes = 0;
+                                        foreach ($salas->result() as $v) {
+                                            echo '<th class="ui-widget-header">' . $v->Sala . '</th>';
+                                        }
+                                        ?>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($resrv_ciclo as $k => $v) { ?>
+                                        <tr>
+                                            <th class="ui-widget-content"><?php echo $this->utl_apecc->getdate_SQL($k); ?></th>
+                                            <?php
+                                            foreach ($salas->result() as $s) {
+                                                if (array_key_exists($s->idSala, $v)) {
+                                                    $hrs = $v[$s->idSala]['horas'];
+                                                    $total_hrs_mes+=$hrs;
+                                                    echo '<td class="ui-widget-content">' . $hrs . '</td>';
+                                                } else {
+                                                    echo ' <td class="ui-widget-content">0</td>';
+                                                }
+                                                ?>
+
+                                            <?php } ?>
+                                        </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                            <div class="ui-grid-footer ui-widget-header ui-corner-bottom ui-helper-clearfix"> 
+                                <div class="ui-widget">
+                                    <div class="ui-state-highlight ui-corner-all" style="padding: 0 .7em;"> 
+                                        <p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+                                            <strong>Total de horas en el mes: </strong> <?php echo $total_hrs_mes; ?>&nbsp; horas.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!--Fin acc3-->
+
+    </div><!--Fin accordion-->
+</div><!--Fin row-->
+
+<script type="text/javascript">
+    // On document ready, call visualize on the tb_resxmesact.
+    $(document).ready(function() {
+        $( "#tab_resumen_horas_mes,#tab_resumen_horas_per,#tabs_rep1_salas" ).tabs();
+        $( "#accordion_tiporep" ).accordion({
+            header: "h3",
+            autoHeight: false,
+            navigation: true
+        });
+
+    });
+
+</script>
+<style>
+    #accordion_tiporep .ui-state-focus{
+        background-image: none !important;
+    }
+    #accordion_tiporep{
+        margin: 30px;
+        width: auto !important;
+    }
+</style>
+
+
+<div id="tabs-3" class="ui-state-active">
+    <div  id="datos_act_asign" class="ui-grid ui-widget ui-widget-content ui-corner-all" >
+        <div class="ui-grid-header ui-widget-header ui-corner-top" >Resumen de uso del Centro de computo pos Sala en el mes</div>
+        <table id="tb_resxmesact" class="ui-grid-content ui-widget-content" style=" width: 100%">
+            <thead>
+                <tr>
+                    <th class="ui-widget-header">D&iacute;a</th>
+                    <?php
+                    $total_hrs_mes = 0;
+                    foreach ($salas->result() as $v) {
+                        echo '<th class="ui-widget-header">' . $v->Sala . '</th>';
+                    }
+                    ?>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach ($periodos_mes_actual as $key => $value) {
+                    ?>
+                    <tr>
+                        <th class="ui-widget-content"><?php echo 'Semana ' . $key . ' (' . $value['dia_inicio'] . ' al ' . $value['dia_fin'] . ' de ' . $this->utl_apecc->getMesStr($m) . ')'; ?></th>
+                        <?php
+                        foreach ($salas->result() as $s) {
+                            if ((array_key_exists($s->idSala, $resrv_mes_sem))) {
+                                $suma = array_sum($resrv_mes_sem[$s->idSala][$key]);
+                                $total_hrs_mes+=$suma;
+                                echo '<td class="ui-widget-content">' . $suma . '</td>';
+                            } else {
+                                echo ' <td class="ui-widget-content">0' . $s->idSala . '</td>';
+                            }
+                        }
+                        ?>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+        <div class="ui-grid-footer ui-widget-header ui-corner-bottom ui-helper-clearfix"> 
+            <div class="ui-widget">
+                <div class="ui-state-highlight ui-corner-all" style="padding: 0 .7em;"> 
+                    <p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+                        <strong>Total de horas en el mes: </strong> <?php echo $total_hrs_mes; ?>&nbsp; horas.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

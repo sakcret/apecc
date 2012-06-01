@@ -212,7 +212,7 @@ th:active {
  * DataTables row classes
  */
 table.display tr.odd.gradeA {
-	background-color: #E2E4FF;
+    background-color:#cce7f5;
 }
 
 table.display tr.even.gradeA {
@@ -245,7 +245,7 @@ table.display tr.even.gradeU {
 
 
 tr.odd {
-	background-color: #E2E4FF;
+	background-color:#cce7f5;
 }
 
 tr.even {
@@ -364,7 +364,7 @@ table.display tr.odd.row_selected td {
  */
 /* For the standard odd/even */
 tr.odd td.sorting_1 {
-	background-color: #D3D6FF;
+	background-color: #bbe1f5;
 }
 
 tr.odd td.sorting_2 {
@@ -376,7 +376,7 @@ tr.odd td.sorting_3 {
 }
 
 tr.even td.sorting_1 {
-	background-color: #EAEBFF;
+	background-color: #e7f3fa;
 }
 
 tr.even td.sorting_2 {
@@ -399,7 +399,7 @@ tr.even td.sorting_3 {
 	  ee > e2
  */
 tr.odd.gradeA td.sorting_1 {
-	background-color: #D3D6FF;
+    background-color:#bbe1f5;
 }
 
 tr.odd.gradeA td.sorting_2 {
@@ -411,7 +411,7 @@ tr.odd.gradeA td.sorting_3 {
 }
 
 tr.even.gradeA td.sorting_1 {
-	background-color: #EAEBFF;
+	background-color: #e7f3fa;
 }
 
 tr.even.gradeA td.sorting_2 {

@@ -177,7 +177,7 @@
         $porcentaje = (100 / $numreg) - 1;
         echo ' <div style="margin-bottom: 20px;" id="tabs">' . PHP_EOL . '<ul>' . PHP_EOL;
         for ($is = 0; $is < $numreg; $is++) {
-            echo '<li style="width:' . $porcentaje . '%"><a onclick="sala_actual(' . $s[$is]["idSala"] . ')" href="#tabs-' . $s[$is]["idSala"] . '">&nbsp;&nbsp;Sala ' . $s[$is]["Sala"] . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></li>' . PHP_EOL;
+            echo '<li style="width:' . $porcentaje . '%"><a style=" width: 90%" onclick="sala_actual(' . $s[$is]["idSala"] . ')" href="#tabs-' . $s[$is]["idSala"] . '">&nbsp;&nbsp;Sala ' . $s[$is]["Sala"] . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></li>' . PHP_EOL;
         }
         echo '</ul>' . PHP_EOL;
 
@@ -627,3 +627,10 @@
         window.attachEvent('onload', redips_init);
     }
 </script> 
+<?php
+if ($permisos == '') {
+    redirect('acceso/acceso_home/inicio');
+} else {
+    echo '<style type="text/css">' . $permisos . '</style>';
+}
+?>

@@ -71,7 +71,7 @@ class Actualiza_estado_db_model extends CI_Model {
         }
     }
 
-    function resevacion($clave_reservacion, $fecha, $horaInicio, $horaFin, $login, $numserie, $importe, $edo, $hrs, $edo_equipo, $diasemana, $salaaux, $tipoActAux) {
+    function resevacion($clave_reservacion, $fecha, $horaInicio, $horaFin, $login, $numserie, $importe, $edo, $hrs, $edo_equipo, $diasemana, $salaaux, $tipoActAux,$act) {
         $insertreserv = array(
             'idReservacionesMomentaneas' => $clave_reservacion,
             'Fecha' => $fecha,
@@ -84,7 +84,8 @@ class Actualiza_estado_db_model extends CI_Model {
             'Horas' => $hrs,
             'TipoActividadAux' => $tipoActAux,
             'DiaSemana' => $diasemana,
-            'SalaAux' => $salaaux
+            'SalaAux' => $salaaux,
+            'DetalleActividad' => $act,
         );
 
         $updatequipo = array('Estado' => $edo_equipo);

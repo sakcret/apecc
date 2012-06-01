@@ -25,7 +25,7 @@
         <link rel="stylesheet" href="./css/extensiones_jqueryui.css">
         <link rel="stylesheet" href="./css/estilo_gral.css" type="text/css"/>
 
-        <script type="text/javascript" language="javascript" src="./js/jquery-1.7.1.js"></script>
+        <script type="text/javascript" language="javascript" src="./js/jquery-1.7.2.js"></script>
         <script type="text/javascript" language="javascript" src="./js/datatables/jquery.dataTables.js"></script>
         <!--sweet menu-->
         <script type="text/javascript" language="javascript" src="./js/menu_access/jquery.easing.js"></script>
@@ -34,24 +34,22 @@
         <!--jquery ui-->
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.effects.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.base.js"></script>
-
-        <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.mousewheel-3.0.4.js"></script>
-
+         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.mousewheel-3.0.4.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.accordion.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.autocomplete.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.button.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.dialog.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.slider.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.tabs.js"></script>
-        <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.datepicker1.js"></script>
+        <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.datepicker.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.progressbar.js"></script>
+        
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.menu.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.menubar.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.tooltip.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.checkbox.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.radiobutton.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.popup.js"></script>
-        <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.mask.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.spinner.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.tooltip.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.selectmenu.js"></script>
@@ -81,39 +79,6 @@
                     //notificacion_tip("./images/msg/war_tip.png","Cache desactivado","El cache se encuentra desactivado.");
                 }
             }
-            
-            function muestra_fecha(){
-                var  hoy = new Date(),
-                hora = fillZeroDateElement(hoy.getHours()),
-                minutos = fillZeroDateElement(hoy.getMinutes()),
-                segundos = fillZeroDateElement(hoy.getSeconds()),
-                dia = fillZeroDateElement(hoy.getDate()),
-                mes = hoy.getMonth()+1,
-                anio=hoy.getFullYear();
-                alert();
-                $('#timestamp').html(dia+' de '+mes+' del '+anio+' '+hora+':'+minutos+':'+segundos);
-                window.setTimeout("muestra_fecha()",1000); 
-            }
-            
-            function getMesFull(num_mes){
-                var mes;
-                switch(num_mes) {
-                    case 1:mes='Enero'; break;
-                    case 2:mes='Febrero'; break;
-                    case 3:mes='Marzo'; break;
-                    case 4:mes='Abril'; break;
-                    case 5:mes='Mayo'; break;
-                    case 6:mes='Junio'; break;
-                    case 7:mes='Julio'; break;
-                    case 8:mes='Agosto'; break;
-                    case 9:mes='Septiembre'; break;
-                    case 10:mes='Octubre'; break;
-                    case 11:mes='Noviembre'; break;
-                    case 12:mes='Diciembre'; break;
-                    default: mes=num_mes;break;
-                }
-                
-            }
         </script>
     </head>
     <?php
@@ -128,52 +93,111 @@
     <script type="text/javascript"
       src="http://jqueryui.com/themeroller/themeswitchertool/">
     </script-->
-    <body onunload="cerrar_sesion()" onload="actualiza_cache_db();">
+    <body>
         <div class="container">
             <noscript>
                 <h1 class='error'>Para utilizar las funcionalidades completas de este sitio es necesario tener     JavaScript habilitado.</h1>    <h1>Aquí están las
                     <a href="http://www.enable-javascript.com/es/" target="_blank"> instrucciones para habilitar JavaScript en tu navegador web</a>.
                     <hr></h1>
             </noscript>
-            <div onload="window.setTimeout('muestra_fecha()',1000);" id="header" class="boxshadow ui-widget-header header ui-corner-all twelvecol last"></div> 
+            <div onload="window.setTimeout('muestra_fecha()',1000);" id="header" class="boxshadow ui-widget-header header ui-corner-all twelvecol last">
+                <img align="left" style=" margin-left: 15px;" src="./images/BANNER_APECC_2.png">
+                <img align="right" style=" margin-right: 15px;" src="./images/logo-uv.png">
+                <img align="right"  src="./images/BANNER_APECC.png">
+            </div> 
             <ul id="ulMenu" class="ui-state-default ui-corner-all boxshadow">
                 <li class="itemli no-icon"><a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></li>
-                <li class="itemli"><a>Reservaciones</a>
+                <?php
+                $hidem = '';
+                $permisos = $this->session->userdata('puedo');
+                $pos = stripos($permisos, 'rs');
+                if ($pos !== false) {
+                    ?>
+                    <li class="itemli"><a>Reservaciones</a>
+                        <ul><?php if (stripos($permisos, 'rst') !== false) {?>
+                            <li><a id="nav_rt" class="manita">Temportaneas</a></li>
+                            <?php } if (stripos($permisos, 'rsf') !== false) {?>
+                            <li><a id="nav_rf" class="manita">Fijas</a></li>
+                            <?php }if (stripos($permisos, 'rss') !== false) {?>
+                            <li><a id="nav_as" class="manita">Apartado de Salas</a></li>
+                            <?php }else { $hidem.='$("#rs_d").css("display","none"); '; }?>
+                        </ul>
+                    </li>
+                <?php
+                } 
+                $pos = stripos($permisos, 'us');
+                if ($pos !== false) {
+                    ?>
+                    <li class="itemli"><a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Usuarios&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                        <ul>
+                            <li class="manita" id="nav_us"><a>Usuarios</a></li>
+                        </ul>
+                    </li>
+                <?php
+                } else {
+                    $hidem.='$("#us_d").css("display","none"); ';
+                }
+                $pos = stripos($permisos, 'ac');
+                if ($pos !== false) {
+                    ?>
+                    <li><a class="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Actividades&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                        <ul>
+                            <li class="manita" id="nav_ac"><a>Actividades</a></li>
+                        </ul>
+                    </li>
+                <?php
+                }
+                $pos = stripos($permisos, 'eq');
+                if ($pos !== false) {
+                    ?>
+                    <li class="itemli"><a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Equipos&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                        <ul>
+                            <?php if (stripos($permisos, 'equ') !== false) {?>
+                            <li><a class="manita" id="nav_eq">Gesti&oacute;n de Equipos</a></li>
+                            <?php }if (stripos($permisos, 'eqb') !== false) {?>
+                            <li><a class="manita" id="nav_ue">Ubicaci&oacute;n de Equipos</a></li>
+                            <?php }if (stripos($permisos, 'eqs') !== false) {?>
+                            <li><a class="manita" id="nav_es">Asignacion de software</a></li>
+                            <?php }?>
+                        </ul>
+                    </li>
+                <?php
+                }
+                $pos = stripos($permisos, 'sw');
+                if ($pos !== false) {
+                    ?>
+                    <li><a class="itemli">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Software&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                        <ul>
+                            <li class="manita" id="nav_sw"><a>Software</a></li>
+                        </ul>
+                    </li>
+                    <?php
+                    }
+                    $pos = stripos($permisos, 'rp');
+                    if ($pos !== false) {
+                        ?>
+                    <li class="itemli"><a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reportes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                        <ul>
+                            <?php if (stripos($permisos, 'rpg') !== false) {?>
+                            <li><a class="manita" id="nav_rg">Reportes Generales</a></li>
+                            <?php }if (stripos($permisos, 'rpp') !== false) {?>
+                            <li><a class="manita" id="nav_rp">Reportes Personalizados</a></li>
+                            <?php } ?>
+                        </ul>
+                    </li>
+                <?php } 
+                    unset($pos)?>
+                <li class="itemli"><a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sistema&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
                     <ul>
-                        <li><a id="nav_rt" class="manita">Temportaneas</a></li>
-                        <li><a id="nav_rf" class="manita">Fijas</a></li>
-                        <li><a id="nav_as" class="manita">Apartado de Salas</a></li>
-                    </ul>
+                            <?php if (stripos($permisos, 'siu') !== false) {?>
+                            <li><a class="manita" id="nav_su">Usuarios del sistema</a></li>
+                            <?php }if (stripos($permisos, 'sic') !== false) {?>
+                            <li><a class="manita" id="nav_sc">Configuraciones</a></li>
+                            <?php  } ?>
+                            <li><a class="manita" id="nav_ay">Ayuda</a></li>
+                            <li><a class="manita" id="nav_ad">Acerca de APECC</a></li>
+                        </ul>
                 </li>
-                <li class="itemli"><a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Usuarios&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
-                    <ul>
-                        <li class="manita" id="nav_us"><a>Usuarios</a></li>
-                    </ul>
-                </li>
-                <li><a class="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Actividades&nbsp;&nbsp;&nbsp;&nbsp;</a>
-                    <ul>
-                        <li class="manita" id="nav_ac"><a>Actividades</a></li>
-                    </ul>
-                </li>
-                <li class="itemli"><a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Equipos&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
-                    <ul>
-                        <li><a class="manita" id="nav_eq">Gesti&oacute;n de Equipos</a></li>
-                        <li><a class="manita" id="nav_ue">Ubicaci&oacute;n de Equipos</a></li>
-                        <li><a class="manita" id="nav_es">Asignacion de software</a></li>
-                    </ul>
-                </li>
-                <li><a class="itemli">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Software&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
-                    <ul>
-                        <li class="manita" id="nav_sw"><a>Software</a></li>
-                    </ul>
-                </li>
-                <li class="itemli"><a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reportes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
-                    <ul>
-                        <li><a class="manita" id="nav_rg">Reportes Genrales</a></li>
-                        <li><a class="manita" id="nav_rp">Reportes Personalizados</a></li>
-                    </ul>
-                </li>
-                <li class="itemli no-icon"><a>&nbsp;</a></li>
 
                 <div id="timestamp" align="right"></div>
                 <span style=" float: right !important;"><img id="refresh" style=" height: 28px !important;" title="Actualizar P&aacute;gina" class="tooltip manita" src="./images/recargar.png">
@@ -182,16 +206,12 @@
             <div id="titulo_pag"class="twelvecol ui-widget-header header ui-corner-top boxshadow">
                 <label style="float: left;  margin-left: 50px;" id="titulo_ventana" class="">
                     <center class="label_titulo">
-                        <?php
-                        if (isset($titulo_pag) && ($titulo_pag != '')) {
-                            echo $titulo_pag . PHP_EOL;
-                        }
-                        ?>
+                    <?php  if (isset($titulo_pag) && ($titulo_pag != '')) { echo $titulo_pag . PHP_EOL; }  ?>
                     </center>
                     <!--div style="font-size: 10 px; width: auto; float:right; margin-right: 50px;" id="switcher"></div-->
                 </label>
                 <div style="float:right; width:30%; margin-left: 5px; margin-right: 5px; height: 80%; margin-top: 0.3%;" class="ui-state-focus ui-corner-all">
-                    <div class="manita" onclick="cerrar_sesion()" style="float: right; margin-right: 5px; ">
+                    <div class="manita" style="float: right; margin-right: 5px; ">
                         <img title="Cerrar sesi&oacute;n" Style="height: 30px !important;" id="salir" onclick="cerrar_sesion()" class="manita" src="./images/salir.png"/>
                     </div>
                     <div style="float:left; margin-right: 10px;">
@@ -219,19 +239,31 @@
                     echo $contenido . PHP_EOL;
                 }
                 ?>
-
             </div>
-            <div id="footer" class="twelvecol last ui-widget-header ui-corner-bottom boxshadow" style="height:70px"></div>
-            <?php if($this->config->item('ver_menu_lt')){ ?>
-            <ul id="acess_menu">
-                <li><a class="boxshadowround" id="ml_hm" href="#">Home</a></li>
-                <li><a class="boxshadowround" onclick="window.location.reload()" >Actualizar</a></li>
-                <li><a class="boxshadowround" id="ml_us" href="#">Usuarios</a></li>
-                <li><a class="boxshadowround" id="ml_rm" href="#">Reservaciones</a></li>
-                <li><a class="boxshadowround" id="ml_ex" href="#">Salir</a></li>
-                <li><a class="boxshadowround" id="ml_hp" href="#">Ayuda</a></li>
-            </ul>
-            <?php }?>
+            <div id="footer" class="twelvecol last ui-widget-header ui-corner-bottom boxshadow" style="height:70px">
+                <div align="center" id="foot_lb">
+                    Automatizaci&oacute;n de Procesos en el Centro de Computo (APECC&nbsp; <?php echo $this->config->item("sis_version");?>)<br>
+                    Proyecto realizado para la facultad de Estad&iacute;stica e Inform&aacute;tica de la UNIVERSIDAD VERACRUZANA<br>
+                    Jos&eacute; Adrian Ruiz Carmona
+                    &reg; <?php
+                    setlocale(LC_TIME, 'Spanish');
+                    echo date("F") . " " . date("Y"); 
+                    ?>
+                </div>
+            </div>
+                <?php if ($this->config->item('ver_menu_lt')) { ?>
+                <ul id="acess_menu">
+                    <li><a class="boxshadowround" id="ml_hm" href="#">Home</a></li>
+                    <li><a class="boxshadowround" onclick="window.location.reload()" >Actualizar</a></li>
+                    <li id="us_d"><a class="boxshadowround" id="ml_us" href="#">Usuarios</a></li>
+                    <li id="rs_d"><a class="boxshadowround" id="ml_rm" href="#">Reservaciones</a></li>
+                    <li><a class="boxshadowround" id="ml_ex" href="#">Salir</a></li>
+                    <li><a class="boxshadowround" id="ml_hp" href="#">Ayuda</a></li>
+                </ul>
+               <script type="text/javascript">
+            $(document).ready(function(){ <?php echo $hidem ?>  });
+        </script>
+                <?php } ?>
         </div>
     </body>
 </html>

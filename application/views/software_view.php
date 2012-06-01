@@ -1221,4 +1221,10 @@
     #so_sw,#m_so_sw,#grupos_sw,#grupos_so{width: 300px !important;}
     #m_so_grupo,#so_grupo{width: 300px !important;}
 </style>
-<?php echo '<style type="text/css">'.$permisos.'</style>'; ?>
+<?php
+if ($permisos == '') {
+    redirect('acceso/acceso_home/inicio');
+} else {
+    echo '<style type="text/css">' . $permisos . '</style>';
+}
+?>

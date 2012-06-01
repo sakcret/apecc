@@ -34,6 +34,7 @@ class Actualiza_estado_db extends CI_Controller {
         $start = new DateTime($this->config->item('fecha_periodo_inicio'));
         $end = new DateTime($this->config->item('fecha_periodo_fin'));
         $hoy = new DateTime(date('Y-m-d'));
+        $act ='';
         //si la fecha esta dentro del periodo entonces reservo
         if ($this->validaFechaPeriodo($start, $end, $hoy)) {
             $this->load->model("actualiza_estado_db_model");
@@ -74,7 +75,7 @@ class Actualiza_estado_db extends CI_Controller {
                                 $clave_reservacion = $numserie . substr($usuario, 0, 5) . date("ymdHis");
                                 $alrato = $ahorita->add(new DateInterval('PT' . $horas . 'H')); // a la hora actual le sumo las horas que se especificaron en la reservacion
                                 $horafin = $alrato->format("H") . ':00:00';
-                                $this->actualiza_estado_db_model->resevacion($clave_reservacion, $hoy_str, $horainicio, $horafin, $usuario, $numserie, $importe, $edo, $horas, $edo_equipo, $diasemana, $salaaux);
+                                $this->actualiza_estado_db_model->resevacion($clave_reservacion, $hoy_str, $horainicio, $horafin, $usuario, $numserie, $importe, $edo, $horas, $edo_equipo, $diasemana, $salaaux,$act);
                             }
                         }
                     }
@@ -88,6 +89,7 @@ class Actualiza_estado_db extends CI_Controller {
         $this->load->model("actualiza_estado_db_model");
         $datos_rs = $this->actualiza_estado_db_model->reservacionesSalas($hora, true);
         $countrs = $datos_rs->num_rows();
+        $act='';
         if ($countrs > 0) {
             //para cada una de las reservaciones hacer...
             for ($x = 0; $x < $countrs; $x++) {
@@ -125,7 +127,7 @@ class Actualiza_estado_db extends CI_Controller {
                             $clave_reservacion = $numserie . substr($usuario, 0, 5) . date("ymdHis");
                             $alrato = $ahorita->add(new DateInterval('PT' . $horas . 'H')); // a la hora actual le sumo las horas que se especificaron en la reservacion
                             $horafin = $alrato->format("H") . ':00:00';
-                            $this->actualiza_estado_db_model->resevacion($clave_reservacion, $hoy_str, $horainicio, $horafin, $usuario, $numserie, $importe, $edo, $horas, $edo_equipo, $diasemana, $salaaux, $tipoActAux);
+                            $this->actualiza_estado_db_model->resevacion($clave_reservacion, $hoy_str, $horainicio, $horafin, $usuario, $numserie, $importe, $edo, $horas, $edo_equipo, $diasemana, $salaaux, $tipoActAux,$act);
                         }
                     }
                 }
@@ -136,7 +138,6 @@ class Actualiza_estado_db extends CI_Controller {
     function liberaSalaRS($hora) {
         $this->load->model("actualiza_estado_db_model");
         $datos_rs = $this->actualiza_estado_db_model->reservacionesSalas($hora, false);
-
         $countrf = $datos_rs->num_rows();
         if ($countrf > 0) {
             for ($x = 0; $x < $countrf; $x++) {

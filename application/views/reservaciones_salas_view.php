@@ -212,7 +212,15 @@
                     <th>Opciones</th>
                 </tr>
             </tfoot>
-        </table><br/>
+        </table>
+        <div class="ui-widget-content ui-corner-all" style="margin-top: 8px; padding: 5px;"> 
+        <p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+            <strong>Importante !</strong> : <blockquote style="margin-left: 30px; margin-right: 20px;">
+            1. La fecha de Inicio y fin de las reservaciones de salas son muy importantes, ya que mientras este en rango se seguir&aacute; apartando las sala asignada.
+        Para evtar que se siga reservando asigne una fecha final fuera de rango, es decir una fecha anterior a la actual</blockquote>
+        </p>
+    </div>
+        <br/>
     </div>
 </div>
 <script type="text/javascript" charset="utf-8">
@@ -688,4 +696,10 @@ var dates = $( "#m_fecha_inicio, #m_fecha_fin" ).datepicker({
     }
 
 </style>
-<?php echo '<style type="text/css">'.$permisos.'</style>'; ?>
+<?php
+if ($permisos == '') {
+    redirect('acceso/acceso_home/inicio');
+} else {
+    echo '<style type="text/css">' . $permisos . '</style>';
+}
+?>

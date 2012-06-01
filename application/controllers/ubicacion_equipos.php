@@ -6,6 +6,34 @@ if (!defined('BASEPATH'))
 class Ubicacion_equipos extends CI_Controller {
 
     public function index() {
+         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        $login = $this->session->userdata('login');
+        $permisos_us = $this->session->userdata('puedo');
+        if (!$login) {
+            redirect('acceso/acceso_denegado');
+        }
+        //si el usuario no tiene ningún permiso asignado
+        if($permisos_us==''){
+             redirect('acceso/acceso_home/inicio');
+        }
+        $this->load->library('utl_apecc');
+        //obtener el arreglo con los permisos para el usuario del sistema
+        $ptemp = $this->utl_apecc->getPermisos($this->session->userdata('puedo'));
+        //si el usuario tiene permisos asignados entonces obtengo la clave de permisos para el controlador usuarios
+        //que servirá como indice del arreglo de permisos y asi obtenerlos solo para el controlador actual(usuarios)
+        $prm_array = $this->config->item('prm_permisos');
+        if ($ptemp != FALSE) {
+            $rec = $this->config->item('clvp_ubicacion_equipos');
+            //si en el arreglo de permisos esta la clave de usuarios
+            if (array_key_exists($rec, $ptemp)) {
+                $permisos = $this->utl_apecc->getCSS_prm($ptemp[$rec], $prm_array);
+            }else{
+                redirect('acceso/acceso_home/inicio');
+            }
+        } else {
+            $permisos = $this->utl_apecc->getCSS_prm(false, $prm_array);//si es falso no se encontraron permisos por lo tanto se ponen los atributos para solo lectura
+        }
+        $contenido['permisos'] = $permisos;
         $this->load->model('reservaciones_temporales_model');
         $this->load->model('salas_model');
         $this->load->model('equipos_model');

@@ -6,24 +6,62 @@ if (!defined('BASEPATH'))
 class Usuarios_sistema extends CI_Controller {
 
     public function index() {
+        $this->load->library('utl_apecc');
+        //obtener el arreglo con los permisos para el usuario del sistema
         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
         $login = $this->session->userdata('login');
         if (!$login) {
             redirect('acceso/acceso_denegado');
         }
+        $permisos_us = $this->session->userdata('puedo');
+        if ($permisos_us == '') {
+            redirect('acceso/acceso_home/inicio');
+        }
         $rol = $this->session->userdata('rol');
         if ($rol == 'A') {
+
+            $ptemp = $this->utl_apecc->getPermisos($this->session->userdata('puedo'));
+            $prm_array = $this->config->item('prm_permisos');
+            if ($ptemp != FALSE) {
+                $rec = $this->config->item('clvp_sistema_usuarios');
+                //si en el arreglo de permisos esta la clave de usuarios
+                if (array_key_exists($rec, $ptemp)) {
+                    $permisos = $this->utl_apecc->getCSS_prm($ptemp[$rec], $prm_array);
+                } else {
+                    redirect('acceso/acceso_home/inicio');
+                }
+            } else {
+                $permisos = $this->utl_apecc->getCSS_prm(false, $prm_array); //si es falso no se encontraron permisos por lo tanto se ponen los atributos para solo lectura
+            }
+            $contenido['permisos'] = $permisos;
+
             $data['titulo_pag'] = "GESTI&Oacute;N DE USUARIOS DEL SISTEMA - CCFEI";
-            $data['contenido'] = $this->load->view('usuarios_sistema_view', $contenido = '', true);
+            $data['contenido'] = $this->load->view('usuarios_sistema_view', $contenido, true);
             $this->load->view('plantilla', $data);
         } else {
             redirect('inicio');
         }
     }
 
+    /* JSON output 
+     *  {"lo":"sakcret","rl":"D","no":"Jos\u00e9 Adrian Ruiz Carmona","em":"sakcret_arte8@hotmail.com","pr":"usu>ac|act>v|equ>ac"}
+     */
+
+    function getUsuarios_sistema() {
+        $this->load->model("usuarios_sistema_model");
+        $login = $this->input->Post("id"); //obtengo por medio de post el valor de num_per
+        $row = $this->usuarios_sistema_model->getusuario_sis($login)->row();
+        $jsondata['lo'] = $row->login;
+        $jsondata['rl'] = $row->rol;
+        $jsondata['no'] = $row->nombre;
+        $jsondata['em'] = $row->correo;
+        $jsondata['pr'] = $row->permisos;
+        echo json_encode($jsondata);
+    }
+
     public function datosUsuariosSistema() {
         $sIndexColumn = "login";
-        $aColumns = array($sIndexColumn, 'pass', 'nombre','rol', 'correo', 'permisos');
+        $aColumns = array($sIndexColumn, 'pass', 'nombre', 'rol', 'correo', 'permisos');
         $sTable = "usuariossistema";
         $sLimit = "";
         if (isset($_GET['iDisplayStart']) && $_GET['iDisplayLength'] != '-1') {
@@ -88,34 +126,22 @@ class Usuarios_sistema extends CI_Controller {
                     $id = $aRow[$aColumns[$i]];
                     $row[] = $aRow[$aColumns[$i]];
                 } else {
-                    $row[] = $aRow[$aColumns[$i]];
+                    if ($aColumns[$i] == 'rol') {
+                        $row[] = $this->getNombreRol($aRow[$aColumns[$i]]);
+                    } else {
+                        $row[] = $aRow[$aColumns[$i]];
+                    }
                 }
             }
-            $row[] = '<img src="images/modificar.png" class="opc prm_c" title="Modificar" alt="Modificar" onclick="modifica_actividad(\'' . $id . '\',\'' . $color . '\',$(\'#c_' . $id . '\'))"/>
-                      <img src="images/eliminar.png" class="opc prm_b" title="Eliminar" alt="Eliminar" onclick="elimina_actividad(\'' . $id . '\')"/>';
+            $row[] = '<img src="images/modificar.png" class="opc prm_c" title="Modificar" alt="Modificar" onclick="modifica_usuario_sis(\'' . $id . '\')"/>
+                      <img src="images/eliminar.png" class="opc prm_b" title="Eliminar" alt="Eliminar" onclick="elimina_usuario_sis(\'' . $id . '\')"/>' .
+                    '<img src="images/lock.ico" class="opc" title="Ver Permisos" alt="Permisos" onclick="ver_permisos(\'' . $id . '\')"/>';
             $output['aaData'][] = $row;
         }
         echo $_GET['callback'] . '(' . json_encode($output) . ');';
     }
 
-    function getUsuarios_sistema() {
-        $this->load->model("usuarios_sistema_model");
-        $login = $this->input->Post("id"); //obtengo por medio de post el valor de num_per
-        $rows = $this->usuarios_sistema_model->getUsuarios_sistema($login);
-        foreach ($rows->result() as $row) {
-            $jsondata['lo'] = $row->login;
-            $jsondata['ma'] = $row->matricula;
-            $jsondata['no'] = $row->nombre;
-            $jsondata['ap'] = $row->paterno;
-            $jsondata['am'] = $row->materno;
-            $jsondata['nc'] = $row->num_cred;
-            $jsondata['tu'] = $row->idtipo;
-            $jsondata['st'] = $row->actualiza;
-        }
-        echo json_encode($jsondata);
-    }
-
-    function cambiaColor() {
+    function eliminaUsuarioSistema() {
         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
         $login = $this->session->userdata('login');
         if (!$login) {
@@ -123,143 +149,162 @@ class Usuarios_sistema extends CI_Controller {
         }
         $this->load->model("usuarios_sistema_model");
         $id = $this->input->Post("id");
-        $color = $this->input->Post("color");
-        $sepudo = $this->usuarios_sistema_model->cambiacolor($id, $color);
+        $sepudo = $this->usuarios_sistema_model->elimina_usuario_sis($id);
         if ($sepudo)
             echo 'ok'; else
-            echo "Se produjo un error al eliminar la actividad.";
+            echo "Se produjo un error al eliminar el usuario.";
     }
 
-    function eliminaActividad() {
+    function agregaUsuarioSistema() {
         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
         $login = $this->session->userdata('login');
         if (!$login) {
             redirect('acceso/acceso_denegado');
         }
-        $this->load->model("usuarios_sistema_model");
-        $id = $this->input->Post("id");
-        $sepudo = $this->usuarios_sistema_model->elimina_actividad($id);
-        if ($sepudo)
-            echo 'ok'; else
-            echo "Se produjo un error al eliminar la actividad.";
-    }
-
-    function desasignaActividad() {
-        //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
-        $login = $this->session->userdata('login');
-        if (!$login) {
-            redirect('acceso/acceso_denegado');
+        $this->load->library('utl_apecc');
+        /*         * Inicializar permisos con el rol de solo lectura
+         */
+        $roles = $this->config->item('roles');
+        if (array_key_exists('L', $roles)) {
+            $permisos = $roles['L']['permisos'];
         }
-        $this->load->model("usuarios_sistema_model");
-        $id = $this->input->Post("id");
-        $sepudo = $this->usuarios_sistema_model->desasigna_actividad($id);
-        if ($sepudo)
-            echo 'ok'; else
-            echo "Se produjo un error al eliminar la actividad.";
-    }
 
-    function agregaActividad() {
-        //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
-        $login = $this->session->userdata('login');
-        if (!$login) {
-            redirect('acceso/acceso_denegado');
-        }
-        $this->load->model('usuarios_sistema_model');
-        $nombre = $this->input->Post("nombre");
-        $nombre_corto = $this->input->Post("nombre_corto");
-        $tipo_act = $this->input->Post("tipo_act");
-        $hoy = date("Y-m-d");
-        $color = $this->input->Post("color");
-        if (isset($tipo_act) && $tipo_act == 0) {
-            $f1 = $this->config->item('fecha_periodo_inicio');
-            $f2 = $this->config->item('fecha_periodo_fin');
-        } elseif (isset($tipo_act) && $tipo_act == 1) {
-            $fechaInicio = $this->input->Post("fecha1");
-            $fechaFin = $this->input->Post("fecha2");
-            $f1 = substr($fechaInicio, 6, 4) . '-' . substr($fechaInicio, 3, 2) . '-' . substr($fechaInicio, 0, 2);
-            $f2 = substr($fechaFin, 6, 4) . '-' . substr($fechaFin, 3, 2) . '-' . substr($fechaFin, 0, 2);
+        $prm = $this->input->post("prm");
+        $rol = $this->input->Post("rol");
+        //si se definio un rol
+        if (isset($rol) && $rol != '' && $rol != '0') {
+            if (array_key_exists($rol, $roles)) {
+                $permisos = $roles[$rol]['permisos'];
+            }
         } else {
-            $f1 = $hoy;
-            $f2 = $hoy;
+            if (isset($prm) && $prm != '') {
+                //obtener la cadena de permisos a travez del arreglo prm obtenido por post
+                if ($this->utl_apecc->getStringPermisos($prm) != "") {
+                    $permisos = $this->utl_apecc->getStringPermisos($prm);
+                }
+            }
         }
-        $sepudo = $this->usuarios_sistema_model->agrega_actividad($nombre, $nombre_corto, $tipo_act, $color, $f1, $f2);
+        // ($this->utl_apecc->getPermisos($permisos) );
+        $this->load->model('usuarios_sistema_model');
+
+        $nombre = $this->input->Post("nombre");
+        $login_u = $this->input->Post("login");
+        $p = $this->input->Post("password");
+        $email = $this->input->Post("email");
+        $this->load->library('encrypt');
+        $this->load->helper('security');
+        $password = do_hash($this->encrypt->sha1($p), 'md5');
+        $sepudo = $this->usuarios_sistema_model->agrega_usuario_sis($nombre, $login_u, $password, $rol, $email, $permisos);
         if ($sepudo)
             echo 'ok'; else
-            echo "Se produjo un error al agregar la Actividad.";
+            echo "Se produjo un error al agregar el  Usuario.";
     }
 
-    function asignaActividad() {
+    function modificaUsuarioSistema() {
         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
         $login = $this->session->userdata('login');
         if (!$login) {
             redirect('acceso/acceso_denegado');
         }
-        $this->load->model('usuarios_sistema_model');
-        $id_act = $this->input->Post("id_act");
-        $catedratico = $this->input->Post("catedraticos");
-        $bloque = $this->input->Post("bloque_act");
-        $seccion = $this->input->Post("seccion_act");
-        $sepudo = $this->usuarios_sistema_model->asigna_actividad($id_act, $catedratico, $bloque, $seccion);
-        if ($sepudo)
-            echo 'ok'; else
-            echo "Se produjo un error al agregar la Actividad.";
-    }
+        $this->load->library('utl_apecc');
+        /*         * Inicializar permisos con el rol de solo lectura
+         */
+        $permisos='';
+        $roles = $this->config->item('roles');
+        if (array_key_exists('L', $roles)) {
+            $permisos = $roles['L']['permisos'];
+        }
 
-    function modificaActividad() {
-        //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
-        $login = $this->session->userdata('login');
-        if (!$login) {
-            redirect('acceso/acceso_denegado');
+        $prm = $this->input->post("prm");
+        $rol = $this->input->Post("m_rol");
+        //si se definio un rol
+        if (isset($rol) && $rol != '' && $rol != '0') {
+            if (array_key_exists($rol, $roles)) {
+                $permisos = $roles[$rol]['permisos'];
+            }
+        } elseif (isset($prm) && $prm != '') {
+                //obtener la cadena de permisos a travez del arreglo prm obtenido por post
+                if ($this->utl_apecc->getStringPermisos($prm) != "") {
+                    $permisos = $this->utl_apecc->getStringPermisos($prm);
+                }
+            }else{
+               $permisos=FALSE;
+               $rol=FALSE;
         }
         $this->load->model('usuarios_sistema_model');
-        $id = $this->input->Post("id_act");
+
         $nombre = $this->input->Post("m_nombre");
-        $nombre_corto = $this->input->Post("m_nombre_corto");
-        $color = $this->input->Post("m_color");
-        $sepudo = $this->usuarios_sistema_model->modifica_actividad($id, $nombre, $nombre_corto, $color);
+        $login_u = $this->input->Post("login");
+        $p = $this->input->Post("m_password");
+        $email = $this->input->Post("m_email");
+        $password = '';
+        if (isset($p) && $p != '') {
+            $this->load->library('encrypt');
+            $this->load->helper('security');
+            $password = do_hash($this->encrypt->sha1($p), 'md5');
+        }  else {
+            //sin no se proporciono un password nuevo entonces no se agrega asignando false
+            $password=FALSE;
+        }
+        $sepudo = $this->usuarios_sistema_model->modifica_usuario_sis($nombre,$login_u, $password, $rol, $email, $permisos);
         if ($sepudo)
             echo 'ok'; else
-            echo "Se produjo un error al modificar la Actividad.";
+            echo "Se produjo un error al modificar la UsuarioSistema.";
     }
 
-    function actualizaStatusUsuarios_sistema() {
-        $this->load->model('usuarios_sistema_model');
+    /**
+     * @example getPrmUsuario() $login='admin' por post
+     * @return JSON
+     *   {["t_usu","t_act","t_eqs","t_equ","t_eqb","t_rpg","t_rpp","t_rep","t_rsf","t_rss","t_rst","t_swr","t_uqs","t_siu","t_sic"]}
+     * 
+     */
+    function getPrmUsuario() {
+        $this->load->library("utl_apecc");
+        $this->load->model("usuarios_sistema_model");
         $login = $this->input->Post("id");
-        $st = $this->input->Post("st");
-        $sepudo = $this->usuarios_sistema_model->actualiza_st_usuarios_sistema($login, $st);
-        if ($sepudo)
-            echo 'ok'; else
-            echo "Error al actualizar el estado del usuarios_sistema con el login <b>$login</b>.";
+        $row = $this->usuarios_sistema_model->getPermisosUsuario($login);
+        $ids = $this->utl_apecc->getIDSPermisos($row->row()->permisos);
+        echo json_encode($ids);
     }
 
-    function getActividad() {
+    function getUsuarioSistema() {
         $this->load->model("usuarios_sistema_model");
         $id = $this->input->Post("id");
-        $rows = $this->usuarios_sistema_model->getactividad($id);
+        $rows = $this->usuarios_sistema_model->getusuario_sis($id);
         foreach ($rows->result() as $row) {
-            $jsondata['no'] = $row->Actividad;
+            $jsondata['no'] = $row->UsuarioSistema;
             $jsondata['nc'] = $row->NombreCorto;
             $jsondata['cl'] = $row->Color;
-            $jsondata['ta'] = $row->TipoActividad;
+            $jsondata['ta'] = $row->TipoUsuarioSistema;
         }
         echo json_encode($jsondata);
     }
 
-    function getCatedraticosActividad() {
-        $this->load->model("usuarios_sistema_model");
-        $id = $this->input->Post("idact");
-        $rows = $this->usuarios_sistema_model->getcatedraticosactividad($id);
-        $i = 0;
-        foreach ($rows->result() as $row) {
-            $jsondata[$i]['id'] = $row->id;
-            $jsondata[$i]['np'] = $row->NumeroPersonal;
-            $jsondata[$i]['no'] = $row->Nombre;
-            $jsondata[$i]['lo'] = $row->Login;
-            $jsondata[$i]['bq'] = $row->Bloque;
-            $jsondata[$i]['se'] = $row->Seccion;
-            $i++;
+    function getNombreRol($claverol) {
+        $roles = $this->config->item('roles');
+        if (array_key_exists($claverol, $roles)) {
+            return $roles[$claverol]['rol'];
+        } else {
+            return "";
         }
-        echo json_encode($jsondata);
+    }
+
+    /**
+     * salida JSON ["t_usu","t_act","t_eqs","t_equ","t_eqb","t_rpg","t_rpp","t_rep","t_rsf","t_rss","t_rst","t_swr","t_uqs","t_siu","a_sis"]
+     */
+    function getPermisosRol($rol) {
+        $this->load->library("utl_apecc");
+        $roles = $this->config->item("roles");
+        if (array_key_exists($rol, $roles)) {
+            $ids = $this->utl_apecc->getIDSPermisos($roles[$rol]["permisos"]);
+            if (($ids === false) && count($ids) == 0) {
+                echo 'no';
+            } else {
+                echo json_encode($ids);
+            }
+        } else {
+            echo 'no hay permisos';
+        }
     }
 
 }

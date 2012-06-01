@@ -114,9 +114,9 @@ $(function() {
         currentText: 'Hoy',
         monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
         monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
-        dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-        dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
-        dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+        dayNames: ['Domingo', 'Lunes', 'Martes', 'Mi&eacute;rcoles', 'Jueves', 'Viernes', 'S&aacute;bado'],
+        dayNamesShort: ['Dom','Lun','Mar','Mi&eacute;','Juv','Vie','Sab'],
+        dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','S&aacute;'],
         weekHeader: 'Sm',
         dateFormat: 'dd/mm/yy',
         firstDay: 1,
@@ -192,6 +192,16 @@ function verificaLongitud( o, n, min, max,tips) {
 function validaCampoExpReg( o, regexp, n,tips ) {
     if ( !( regexp.test( o.val() ) ) ) {
         o.addClass( "ui-state-error" );
+        updateTips( n,tips);
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function confirmacionCampo( t1, t2, n,tips ) {
+    if ( t1.val() != t2.val()) {
+        t1.addClass( "ui-state-error" );
         updateTips( n,tips);
         return false;
     } else {
@@ -318,6 +328,37 @@ function campoVacio(o,n,tips) {
           
 }  
 
+function passSeguro(o,n,tips) {  
+    var minuscula = false  
+    var mayuscula = false  
+    var numero = false  
+    var caracter = false  
+    var cadena=o.val();
+    
+    for(i=0;i<cadena.length;i++) {  
+        //si el codigo ASCII es el de las minusculas, pone a true el flag de minusculas  
+        if(cadena.charCodeAt(i)>=97 && cadena.charCodeAt(i)<=122) {  
+            minuscula=true  
+        //si el codigo ASCII es el de las mayusculas, pone a true el flag de mayusculas  
+        } else if(cadena.charCodeAt(i)>=65 && cadena.charCodeAt(i)<=90) {  
+            mayuscula=true  
+        //si el codigo ASCII es el de loss numeros, pone a true el flag de numeros  
+        } else if(cadena.charCodeAt(i)>=48 && cadena.charCodeAt(i)<=57) {  
+            numero=true  
+        //si no es ninguno de los anteriores, a true el flag de caracter simbolico  
+        } else   
+            caracter=true  
+    }  
+  
+    if(caracter==true && numero==true && minuscula==true && mayuscula==true) {  
+        return true;    //cambiar false por true para hacer el submit  
+    } else {  
+        o.addClass( "ui-state-error" );
+        updateTips(n,tips ); 
+        return false;  
+    }  
+}  
+
 function esCampoVacio(o) {  
     var cadena=o.val();  
     if( vacio(cadena) == false ) {  
@@ -368,9 +409,11 @@ $(document).ready(function() {
     $( "textarea").addClass("ui-corner-all paddleft5 ui-widget-content"); 
     $( ".checkbox-ui" ).checkbox();
     $( ".radio-ui" ).radiobutton();
-    $( ".selectmenu-ui" ).selectmenu();
+    $( ".selectmenu-ui" ).selectmenu({
+        style:'popup'
+    });
     $(".popup-ui").popup();
-    /*$(".tooltip" ).tooltip({
+   $(".tooltip" ).tooltip({
         show: null,
         position: {
             my: "left top",
@@ -381,7 +424,7 @@ $(document).ready(function() {
                 top: ui.tooltip.position().top + 10
             }, "fast" );
         }
-    });*/
+    });
 });//findocument ready
 
 function carga_datos_combobox(obj_name,urll,data,first_elem){

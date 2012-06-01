@@ -1,15 +1,38 @@
 <?php
 
-if (!defined('BASEPATH'))
-    exit('No direct script access allowed');
-
 class Equipo_software extends CI_Controller {
 
     public function index() {
-       
+         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        $login = $this->session->userdata('login');
+        $permisos_us = $this->session->userdata('puedo');
+        if (!$login) {
+            redirect('acceso/acceso_denegado');
+        }
+        //si el usuario no tiene ningún permiso asignado
+        if($permisos_us==''){
+             redirect('acceso/acceso_home/inicio');
+        }
+        $this->load->library('utl_apecc');
+        //obtener el arreglo con los permisos para el usuario del sistema
+        $ptemp = $this->utl_apecc->getPermisos($this->session->userdata('puedo'));
+        //si el usuario tiene permisos asignados entonces obtengo la clave de permisos para el controlador usuarios
+        //que servirá como indice del arreglo de permisos y asi obtenerlos solo para el controlador actual(usuarios)
+        $prm_array = $this->config->item('prm_permisos');
+        if ($ptemp != FALSE) {
+            $rec = $this->config->item('clvp_equipos_software');
+            //si en el arreglo de permisos esta la clave de usuarios
+            if (array_key_exists($rec, $ptemp)) {
+                $permisos = $this->utl_apecc->getCSS_prm($ptemp[$rec], $prm_array);
+            }else{
+                redirect('acceso/acceso_home/inicio');
+            }
+        } else {
+            $permisos = $this->utl_apecc->getCSS_prm(false, $prm_array);//si es falso no se encontraron permisos por lo tanto se ponen los atributos para solo lectura
+        }
+        $contenido['permisos'] = $permisos;
         $this->load->model('reservaciones_temporales_model');
         $this->load->model('salas_model');
-        //setlocale(LC_TIME, 'es_MX');
         setlocale(LC_TIME, 'Spanish');
         $contenido['titulo_pag'] = "ASIGNACI&Oacute;N DE SOFTWARE";
         $contenido['include'] = '<script type="text/javascript" language="javascript" src="./js/jsequipos.js"></script>' . PHP_EOL;
@@ -72,7 +95,6 @@ class Equipo_software extends CI_Controller {
     }
 
     public function agregaSos() {
-       
         $sos = $this->input->post('so');
         $numserie = $this->input->post('num_serie');
         $this->load->model('equipo_software_model');
@@ -85,7 +107,6 @@ class Equipo_software extends CI_Controller {
     }
 
     public function agregaSw() {
-       
         $sw = $this->input->post('sw');
         $numserie = $this->input->post('num_serie');
         $this->load->model('equipo_software_model');
@@ -97,6 +118,22 @@ class Equipo_software extends CI_Controller {
         }
     }
 
-}
-?>
+    function grupos_so() {
+        $so = $this->input->post('so');
+        $this->load->model('equipo_software_model');
+        $result = $this->equipo_software_model->getGruposSo($so);
+        echo $this->db->last_query();
+        $s='';
+        if ($result->num_rows() != 0) {
+            foreach ($result->result() as $r) {
+                $s .= "<option value='" . $r->idGrupo . "'> " . $r->nombre . "</option>";
+            }
+            echo $s;
+        } else {
+            echo '';
+        }
+    }
 
+}
+
+?>

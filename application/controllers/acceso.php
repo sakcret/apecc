@@ -12,11 +12,13 @@ class Acceso extends CI_Controller {
 
     function acceso_sistema() {
         $this->load->library('encrypt');
+        $this->load->helper('security');
         $this->load->helper('file');
         $this->load->model("acceso_model");
         $login = $this->input->post("usuario");
         //encripto el password con el algoritmo sh1(unidireccional) para compararlo con la base de datos
-        $password = $this->encrypt->sha1($this->input->post("pass"));
+        $p = $this->encrypt->sha1($this->input->post("pass"));
+        $password = do_hash($p, 'md5');
         $result = $this->acceso_model->ValidarUsuario($login, $password);
         if ($result->num_rows() > 0) {
             $row = $result->row_array(0);
@@ -60,6 +62,10 @@ class Acceso extends CI_Controller {
 
     function en_construccion() {
         $this->load->view('acceso/construccion_view');
+    }
+    function acceso_home($pag_redirect) {
+        $data['url']=$pag_redirect;
+        $this->load->view('acceso/home_acces_view',$data);
     }
 
 }

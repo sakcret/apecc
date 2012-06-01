@@ -16,6 +16,10 @@
 define('mPDF_VERSION','5.4');
 define('_MPDF_URI','/mpdf/');
 
+//Scale factor
+define('_MPDFK', (72/25.4));	// Will only use mm
+
+/*-- HTML-CSS --*/
 define('AUTOFONT_CJK',1);
 define('AUTOFONT_THAIVIET',2);
 define('AUTOFONT_RTL',4);
@@ -36,7 +40,10 @@ require_once(_MPDF_PATH.'config_cp.php');
 
 if (!defined('_JPGRAPH_PATH')) define("_JPGRAPH_PATH", _MPDF_PATH.'jpgraph/'); 
 
-if (!defined('_MPDF_TEMP_PATH')) define("_MPDF_TEMP_PATH", _MPDF_PATH.'tmp/'); 	// mPDF 4.3.007E
+if (!defined('_MPDF_TEMP_PATH')) define("_MPDF_TEMP_PATH", _MPDF_PATH.'tmp/');
+
+if (!defined('_MPDF_TTFONTPATH')) { define('_MPDF_TTFONTPATH',_MPDF_PATH.'ttfonts/'); }
+if (!defined('_MPDF_TTFONTDATAPATH')) { define('_MPDF_TTFONTDATAPATH',_MPDF_PATH.'ttfontdata/'); }
 
 $errorlevel=error_reporting();
 $errorlevel=error_reporting($errorlevel & ~E_NOTICE);

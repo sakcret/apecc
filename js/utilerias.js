@@ -316,10 +316,18 @@ function fillZeroDateElement(elemento){
         elemento="0"+elemento; 
     }
     return elemento;
-        
 }
 
 Date.prototype.addHours= function(h){
     this.setHours(this.getHours()+h);
     return this;
 }
+
+function allCheckboxUICheck(id_obj,estado){
+    $("#"+id_obj+" input[type=checkbox]").each(function() { 
+        $(this).checkbox( "option", "disabled",estado);
+    });
+    
+}
+
+

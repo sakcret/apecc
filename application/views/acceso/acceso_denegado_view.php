@@ -60,7 +60,7 @@
                         <tr>
                             <td colspan="2">&nbsp;</td>
                             <td>
-                                <button id="redirect_now" class="ui-button ui-widget ui-widget-content ui-corner-all"><b>Redireccionar Ahora</b></button>
+                                <button id="redirect_now" class="ui-button ui-widget ui-widget-content ui-corner-all" onclick="window.location=base_url;"><b>Redireccionar Ahora</b></button>
                             </td>
                         </tr>
                     </table>

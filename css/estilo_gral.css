@@ -1,0 +1,122 @@
+*{
+    font:Arial, Helvetica, sans-serif !important;
+    font-size:13px !important;
+
+}
+.header{text-align:center; height:30px; width:100%; font-size: 18px !important; }
+/*sobreescribo la clase conteiner del cssgrid1140 para tener mas padding*/
+.container {padding-left: 50px !important;padding-right: 50px !important;}
+
+/* Estilo para los componetes principales de la maquetacion de la plantilla*/
+#header{margin-top: 10px !important; margin-bottom: 15px !important; height:100px !important;}
+#titulo_pag{ width: 99.9% !important; height: 40px; margin-top: 15px;}
+.label_titulo{ text-align: center; margin-top: 5px; font-size: 20px !important;}
+#content{}
+
+.readonly{
+    color:#A19B9E;
+}
+.paddleft5{ padding-left: 6px;}
+
+.but_bar_content{ height: 38px !important; margin-bottom: 10px !important;}
+.no_edit{
+    background-color: #A19B9E !important;
+
+}
+.bottom10{ margin-bottom: 10px;}
+.but_bar{float:left !important; margin-left: 4px !important; margin-top: 4px !important;}
+.boxshadow{
+    box-shadow: 4px 4px 10px #999;
+    -webkit-box-shadow: 4px 4px 10px #999;
+    -moz-box-shadow: 4px 4px 10px #999;
+}
+
+.boxshadowround{
+    box-shadow: 0 0 10px #999;
+    -webkit-box-shadow: 0 0 10px #999;
+    -moz-box-shadow: 0 0 10px #999;
+
+}
+
+.header_person{
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: 100%;
+    height: 25px;
+    text-align:center;
+}
+
+.left_margin{
+    float: left; 
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+
+.glass{
+    background-image:url(../images/glass.png); height:auto;
+}
+#toolbar {
+    width: 100% !important;;
+    padding: 15px 4px 12px 6px;
+}
+.label_nav {
+    /* width: 19.7%;*/
+}
+.height_widget{height: 26px !important;}
+#footer{
+    margin-bottom:50px !important;
+}
+.hide{
+    display: none;
+}
+
+/**
+*Aplicar estilo al input de busqueda del datatable
+*/
+.buscar_dt{
+    -moz-border-radius-bottomright: 6px; 
+    -webkit-border-bottom-right-radius: 6px; 
+    -khtml-border-bottom-right-radius: 6px; 
+    border-bottom-right-radius: 6px; 
+    -moz-border-radius-topleft: 6px; -webkit-border-top-left-radius: 6px; -khtml-border-top-left-radius: 6px; border-top-left-radius: 6px;
+    -moz-border-radius-topright: 6px; -webkit-border-top-right-radius: 6px; -khtml-border-top-right-radius: 6px; border-top-right-radius: 6px;
+    -moz-border-radius-bottomleft: 6px; -webkit-border-bottom-left-radius: 6px; -khtml-border-bottom-left-radius: 6px; border-bottom-left-radius: 6px; 
+}
+
+
+input.text{ margin-bottom:5px; width:95%;}
+.textarea { margin-bottom:5px; width:95%; padding: 5px;}
+.select { margin-bottom:5px; width:95%;}
+fieldset { padding:0; border:0; margin-top:25px; }
+div#users-contain { width:100%; margin: 20px 0; }
+div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
+div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+.ui-dialog .ui-state-error { padding: .3em; }
+.validateTips { border: 1px solid transparent; padding: 0.3em; }
+
+/*estilo para organizar los selects en combobox jqueryui*/
+.ui-button { margin-left: -1px; }
+.ui-button-icon-only .ui-button-text { padding: 0.35em; } 
+.ui-autocomplete-input { margin: 0; padding: 0.48em 0 0.47em 0.45em; }
+
+.opc{cursor: pointer; margin-right: 5px;}
+.manita{cursor: pointer;}
+
+/*estilo para dar formato al widgwet spinner*/
+.ui-spinner {position: relative}
+.ui-spinner-buttons {position: absolute}
+.ui-spinner-button {overflow: hidden}
+
+.transparencia {
+   opacity: .80;
+   -moz-opacity: .80;
+   filter:alpha(opacity=80);
+   float: left;
+} 
+
+
+
+
+

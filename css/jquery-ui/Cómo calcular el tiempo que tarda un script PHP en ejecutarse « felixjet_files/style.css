@@ -1,0 +1,600 @@
+@import "css/reset.css";
+
+/*
+####################################################################
+Structure
+#################################################################### */
+body {
+	font: .9em Arial, Helvetica, 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
+	color: #444;
+	background: #e5e5e5;
+
+}
+
+#wrapper {
+	width: 1000px;
+	padding:0 10px;
+	margin:0 auto;
+	background: transparent url(images/bg.png) no-repeat top center;
+}
+
+#header {
+	padding: 30px 0 35px 0;
+}
+	#header .left {
+		margin-left: 160px;
+	}
+
+
+/*
+####################################################################
+General
+#################################################################### */
+
+pre {
+	font-size: 12px;
+	margin: 15px 0;
+	line-height: 18px;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	padding: 8px;
+	background-color: #fcfcfc;
+	color: #444;
+	border: 1px solid #ccc;
+}
+
+code {
+	font-family: Courier, Lucida;
+}
+
+#related-posts img {
+	width: 50px;
+	height: 50px;
+	padding: 4px;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-khtml-border-radius: 3px;	
+}
+
+.col140 {
+	float: left;
+	width: 140px;
+	margin-right: 20px;
+	text-shadow: 0 1px 0 #fff;
+}
+	.col140 a, .col140 a:link, .col140 a:visited, .col140 a:active,
+	#sidebar a, #sidebar a:link, #sidebar a:visited, #sidebar a:active {
+		color: #888;
+	}
+	.col140 a:hover,
+	#sidebar a:hover {
+		color: #666;
+	}
+
+.col300 {
+	float: left;
+	width: 300px;
+	margin-right: 20px;
+}
+
+.col460 {
+	float: left;
+	width: 520px;
+	margin-right: 20px;
+}
+	.postContent {
+		float: right;
+	}
+
+.col620 {
+	float: left;
+	width: 680px;
+	margin-right: 20px;
+}
+
+.left {
+	float: left;
+}
+	.alignleft {
+		float: left;
+		margin: 0 20px 10px 0;
+	}
+
+.right {
+	float: right;
+}
+	.alignright {
+		float: right;
+		margin: 0 0 10px 20px;
+	}
+
+.aligncenter,
+div.aligncenter {
+   display: block;
+   margin-left: auto;
+   margin-right: auto;
+}
+
+.clear {
+	margin-right: 0;
+}
+	.clear:after, #header:after, #content:after, #sidebar:after, #wrapper:after, .alignleft:after, .alignright:after {
+		content: ".";
+		display: block;
+		height: 0;
+		clear: both;
+		visibility: hidden;
+	}
+
+
+/*
+####################################################################
+Fonts General
+#################################################################### */
+h1 {
+	font-size: 3.5em;
+	line-height: 1em;
+	font-weight: bold;
+	letter-spacing: -2px;
+	color: #b84e82;
+}
+
+h2 {
+	font-size: 2.2em;
+	line-height: 1em;
+	margin-bottom: 5px;
+	letter-spacing: -1px;
+	color: #6D2E4C;
+}
+	#content h2, #content h3 {
+		margin-left: 160px;
+	}
+	#content .postContent h2, #content .postContent h3, #respond h2 {
+		margin-left: 0;	
+	}
+
+h3 {
+	font-size: 1.8em;
+	font-weight: bold;
+	color: #444;
+	margin-bottom: 5px;
+}
+	#sidebar h3 {
+		font-size: 1.5em;
+	}
+	
+h4 {
+	font-size: 1.2em;
+	margin-bottom: 2px;
+}
+
+p {
+	line-height: 1.5em;
+	margin-bottom: 15px;
+}
+
+small {
+	color: #999;
+}
+
+a, a:link, a:visited, a:active {
+	text-decoration: none;
+	color: #3D3070;
+	cursor: pointer;
+}
+
+.post a, .post a:link, .post a:visited, .post a:active, .post a:hover {
+	font-weight: bold;
+}
+
+a:hover {
+	color: #5744A0;
+	cursor: pointer;
+}
+
+a:active {
+	text-shadow: 0 -1px 0 #fff;
+}
+
+h2 a, h2 a:link, h2 a:visited, h2 a:active {
+	text-decoration: none;
+	color: #6D2E4C;
+}
+
+h2 a:hover {
+	color: #b84e82;
+}
+
+/*
+####################################################################
+Posts / Pages / tt & Trackback list
+#################################################################### */
+
+.post .addthis_container {
+	margin-top: 30px;
+}
+
+.post .addthis_container img {
+		background: none;
+		float: right;
+}
+
+.post {
+	margin-top: 50px;
+}
+	.post:first-child {
+		margin-top: 0;
+	}
+	h2 + .post {
+		margin-top: 25px;
+	}
+.postInfos, .comment .col140, .pingback .col140, .trackback .col140 {
+	margin-top: 3px;
+	font-size: .75em;
+	color: #888;
+	text-align: right;
+}
+	.postInfos p, .comment .col140 p, .comment-reply-link, .pingback .col140 p, .trackback .col140 p {
+		display: block;
+		line-height: 1.8em;
+		margin-bottom: 0;
+		padding: 3px 0;
+		border-top: 1px solid #ccc;
+	}
+	.postInfos p:first-child, .comment .col140 p:first-child, .pingback .col140 p:first-child, .trackback .col140 p:first-child {
+		padding-top: 0;
+		border-top: 0;
+	}
+.post img, .page img, .attachment img, .wp-caption {
+	width: auto;
+	border: 1px solid #ccc;
+	padding: 9px;
+	background: #ccc;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+}
+	.post a:hover img, .post .wp-caption:hover {
+		border: 1px solid #999;
+	}
+
+.post .wp-smiley {
+	border: none;
+	padding: 0;
+}
+
+.article-links img {
+	padding: 7px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;	
+}
+
+.wp-caption {
+	padding: 9px 0 0 8px;
+	margin-bottom: 15px;
+}
+.wp-caption img {
+	margin: 0 auto;
+	border: 0;
+	padding: 0;
+	background: none;
+	border-radius: 0;
+	-moz-border-radius: 0;
+	-webkit-border-radius: 0;
+	-khtml-border-radius: 0;
+}
+	.post .wp-caption a:hover img {
+		border: none;
+	}
+.wp-caption-text {
+	font-size: .9em;
+	text-align: center;
+	font-style: italic;
+	margin: 2px 0 5px;
+}
+.post .gallery img {
+	padding: 4px;
+}
+.post blockquote {
+	margin-left: -19px;
+	padding-left: 19px;
+	border-left: 1px solid #ccc;
+	font-style: italic;
+}
+.post pre {
+	margin-bottom: 15px;
+}
+.post ul, .post ol {
+	margin-bottom: 15px;
+}
+	.post ul li {
+		list-style: disc outside;
+		line-height: 1.8em;
+	}
+	.post ol li {
+		list-style: decimal outside;
+		line-height: 1.8em;
+	}
+
+.navigation {
+	border-top: 1px solid #ccc;
+	padding: 15px 0;
+	margin: 40px 0 15px 0;
+}
+	.navComments {
+		border-bottom: 1px solid #ccc;
+		padding: 15px 0;
+		margin: 0 0 15px 0;
+	}
+
+.pagination {
+	margin-left: -160px;
+}
+	.pagination span {
+		display: block;
+		width: 140px;
+		float: left;
+		margin-right: 20px;
+		text-align: right;
+	}
+
+
+/*
+####################################################################
+Comments
+#################################################################### */
+#comments {
+	margin-top: 20px;
+	margin-left: 160px;
+	border-bottom: 1px solid #ccc;
+	padding-bottom: 10px;
+	text-align: right;
+}
+	.comment, .pingback, .trackback {
+		padding: 15px 0 20px;
+		border-bottom: 1px solid #ccc;
+	}
+	
+	.depth-1 {
+		width: 679px;
+	}
+		.depth-1 .col460 {
+			width: 509px;
+		}
+	
+	.avatar {
+		float: right;
+		margin: 0 0 10px 20px;
+		border: 1px solid #ccc;
+		padding: 4px;
+		background: #fff;
+		border-radius: 5px;
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		-khtml-border-radius: 5px;
+	}
+
+p.nocomments {
+	margin-left: 160px;
+}
+
+#respond {
+	padding: 35px 0 15px 160px;
+}
+
+#commentform textarea {
+	width: 510px;
+}
+#commentform span {
+	display: block;
+    padding: 1px 2px;
+    background: #fff;
+}
+#commentform label {
+    margin-left: 10px;
+}
+
+
+/*
+####################################################################
+Sidebar
+#################################################################### */
+#sidebar {
+	font-size: 0.75em;
+	color: #888;
+}
+	#sidebar div, #sidebar .col140 div:first-child {
+		padding: 10px 0;
+		border-top: 1px solid #ccc;	
+	}
+	#sidebar div:first-child, #sidebar .col140, #sidebar div.widget div {
+		padding-top: 0;
+		border-top: 0;
+	}
+	#sidebar ul li {
+		line-height: 1.3em;
+		padding: 3px 0;
+	}
+		#sidebar ul.children {
+			margin-left: 10px;
+		}
+	#sidebar p {
+		line-height: 1.5em;
+		margin: 0;
+		padding: 5px 0;
+	}
+
+.textwidget {
+	padding-bottom: 0 !important;
+}
+
+.textwidget img {
+	border: 1px solid #ccc;
+	padding: 4px;
+	background: #fff;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+}
+
+	
+/*
+####################################################################
+Forms
+#################################################################### */
+input, textarea, select {
+	font: 1em 'Helvetica Neue', Helvetica, 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
+	color: #666;
+	border: 1px solid #ccc;
+	background: #fff;
+	padding: 4px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+}
+
+input:hover, textarea:hover {
+	border-color: #999;
+	outline: none;
+}
+
+input:focus, textarea:focus {
+	border-color: #999;
+	color: #3D3070;
+	outline: none;
+	-webkit-box-shadow: 0 0 10px #999;
+	-moz-box-shadow: 0 0 10px #999;
+}
+
+input.submit {
+	width: auto;
+	font-weight: bold;
+	background: #3D3070 url(images/gradient.png) repeat-x top left;
+	color: #fff;
+	border: 1px solid #3D3070;
+	padding: 7px 10px;
+	text-shadow: 0 -1px 0 #3D3070;
+	cursor: pointer;
+}
+	input.submit:hover, input.submit:focus {
+		background-color: #5744A0;
+		-webkit-box-shadow: none;
+		-moz-box-shadow: none;
+	}
+	input.submit:active {
+		padding: 8px 10px 6px;
+	}
+	
+#searchform {
+	margin-top: 5px;
+}
+	#searchform #s {
+		float: left;
+		width: 265px;
+		height: 20px;
+		padding: 5px 5px 0;
+		border: 0;
+		border-top-right-radius: 0;
+		border-bottom-right-radius: 0;
+		-moz-border-radius-topright: 0;
+		-moz-border-radius-bottomright: 0;
+		-webkit-border-top-right-radius: 0;
+		-webkit-border-bottom-right-radius: 0;
+		-khtml-border-top-right-radius: 0;
+		-khtml-border-bottom-right-radius: 0;
+	}
+	#searchSubmit {
+		cursor: pointer;
+		width: 25px;
+		height: 25px;
+		padding: 0;
+		border: 0;
+		background: url(images/search.png) no-repeat top left;
+		text-indent: -9999px;
+		border-radius: 0;
+		-moz-border-radius: 0;
+		-webkit-border-radius: 0;
+		-khtml-border-radius: 0;
+	}
+		#searchSubmit:hover, #searchSubmit:focus {
+			background-position: center left;
+		}
+		#searchSubmit:active {
+			background-position: bottom left;
+		}
+
+
+/*
+####################################################################
+Table
+#################################################################### */
+table {
+	width: 100%;
+}
+	th {
+		font-weight: bold;
+		text-align: left;
+		padding: 5px 3px;
+	}
+	td {
+		padding: 5px 3px;	
+	}
+	caption {
+		padding: 5px 0;
+		text-align: center;
+	}
+
+.widget_calendar {
+
+}
+	.widget_calendar td, .widget_calendar th {
+		text-align: center;
+	}
+	.widget_calendar #today {
+		font-weight: bold;
+		color: #b84e82;
+	}
+
+.wp-pagenavi a {
+	padding: 2px 4px;
+	margin: 2px;
+	text-decoration: none;
+	border: 1px solid #ccc;
+	color: #444;
+	background-color: #fff;	
+}
+
+.wp-pagenavi a:hover {	
+	border: 1px solid #444;
+	color: #b84e82;
+}
+
+.wp-pagenavi span.pages {
+	padding: 2px 4px;
+	margin: 2px;
+	margin-right: 20px;
+	border: 1px solid #444;
+	color: #444;
+	background-color: #fff;
+}
+.wp-pagenavi span.current {
+	padding: 2px 4px;
+	margin: 2px;
+	font-weight: bold;
+	border: 1px solid #ccc;
+	color: #ccc;
+	background-color: #fff;
+}
+.wp-pagenavi span.extend {
+	padding: 2px 4px;
+	margin: 2px;	
+	border: 1px solid #ccc;
+	color: #ccc;
+	background-color: #fff;
+}

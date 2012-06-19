@@ -1,0 +1,30 @@
+<root>
+	<element>
+		<idSala>1</idSala>
+		<Sala>CC1</Sala>
+		<Columnas>6</Columnas>
+		<Filas>4</Filas>
+		<Indice>15</Indice>
+	</element>
+	<element>
+		<idSala>2</idSala>
+		<Sala>CC2</Sala>
+		<Columnas>6</Columnas>
+		<Filas>5</Filas>
+		<Indice>10</Indice>
+	</element>
+	<element>
+		<idSala>3</idSala>
+		<Sala>CC3</Sala>
+		<Columnas>6</Columnas>
+		<Filas>6</Filas>
+		<Indice>4</Indice>
+	</element>
+	<element>
+		<idSala>4</idSala>
+		<Sala>CC4</Sala>
+		<Columnas>6</Columnas>
+		<Filas>3</Filas>
+		<Indice>1</Indice>
+	</element>
+</root>

@@ -1,0 +1,14 @@
+/*
+ * jQuery UI Checkbox @VERSION
+ *
+ * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://jquery.org/license
+ *
+ * http://docs.jquery.com/UI/Checkbox#theming
+ */
+.ui-checkbox input{ width:100%; height:100%; }
+.ui-checkbox.ui-state-default{ vertical-align:middle; display:inline; display:inline-block; width: 16px; height: 16px; background-image: url(images/ui-icons_ffffff_256x240.png)/*{iconsContent}*/; background-position:16px 16px; }
+.ui-checkbox.ui-state-active{ background-position: -64px -144px; }
+.ui-checkbox.ui-state-hover{}
+.ui-checkbox.ui-state-focus{}

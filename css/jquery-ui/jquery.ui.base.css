@@ -1,0 +1,18 @@
+/*
+ * jQuery UI CSS Framework @VERSION
+ *
+ * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://jquery.org/license
+ *
+ * http://docs.jquery.com/UI/Theming
+ */
+
+@import url("jquery.ui.checkbox.css");
+@import url("jquery.ui.menu.css");
+@import url("jquery.ui.menubar.css");
+@import url("jquery.ui.radiobutton.css");
+@import url("jquery.ui.spinner.css");
+@import url("jquery.ui.tooltip.css");
+@import url("jquery.ui.selectmenu.css");
+@import url("jquery.ui.timepicker.css");

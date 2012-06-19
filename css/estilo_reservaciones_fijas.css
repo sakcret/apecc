@@ -1,0 +1,129 @@
+/*
+
+Darko Bunic
+http://www.redips.net/
+Mar, 2011.
+
+*/
+
+body{
+    font-family: arial;
+    margin: 0px; /* for IE6 / IE7 */
+}
+
+/* container for the left table */
+#left{
+    float: left;
+    /*margin-right: 20px;*/
+}
+/* container for the main table and message line below */
+#right{
+
+    padding-left: auto;
+    padding-right: 0px;
+    /* align div to the right */
+    margin-left: auto;
+}
+
+#div_tabla_actividades{
+    float: left;
+    width: 10%;
+
+}
+
+#div_tabla_reservaciones{
+    float: left;
+    width: 90%;
+    padding-left: auto;
+    /* align div to the right */
+
+
+}
+/* drag objects (DIV inside table cells) */
+.drag{
+    cursor: move;
+    margin: auto;
+    z-index: 10;
+    color: #222;
+    text-align: center;
+    opacity: 0.9;
+    filter: alpha(opacity=70);
+    width: 140px;
+    border: 1px solid #555;
+    border-radius: 3px;
+    -moz-border-radius: 3px; 
+    font-size: 10px !important; 
+}
+.label1{
+    font-weight: bolder;
+    font-size: 11px !important;
+  
+}
+
+.label2{
+    font-weight: lighter;
+    font-size: 10px !important;
+
+}
+.label3{
+	text-align:center;
+	float: right;
+	width:100%;
+    font-weight: lighter;
+    font-size: 10px !important;
+}
+/* overwrite border settings for left tables */
+/* set all borders to 0px except border-bottom 
+div#drag .table1 td{
+    border-width: 0px 0px 1px 0px;
+}*/
+/* styles for clone DIV elements in left table */
+div#drag .table1 div {
+    margin-left: 5px;
+    float: left;
+}
+/* define styles for buttons */
+div#drag .table1 input {
+    float: right;
+    width: 15px;
+    height: 23px;
+    margin-right: 5px;                  
+    border-width: 1px;
+    /* round corners */
+    border-radius: 3px;
+    /* default visibility is hidden */
+    visibility: hidden;
+}
+
+/* blank cells (upper left corner) */
+.blank {
+    background-color: white;
+}
+
+
+/* background color for lunch */
+.lunch {
+    color: #665;
+    background-color: #f8eeee;
+}
+
+
+/* dark cells (first column and table header) */
+.dark{
+    color: #444;
+    background-color: #e0e0e0;
+}
+
+/*.button_container{
+        padding-top: 10px;
+        text-align: right;
+}
+
+                 "Save" button 
+                .button_container input{
+                        background-color: #6A93D4;
+                        color: white; 
+                        border-width: 1px;
+                        width: 40px;
+                        padding: 0px;
+                }*/

@@ -6,6 +6,7 @@ if (!defined('BASEPATH'))
 class Equipo_software extends CI_Controller {
 
     public function index() {
+       
         $this->load->model('reservaciones_temporales_model');
         $this->load->model('salas_model');
         //setlocale(LC_TIME, 'es_MX');
@@ -44,7 +45,7 @@ class Equipo_software extends CI_Controller {
         }
         echo json_encode($jsondata);
     }
-    
+
     public function getSwEquipo($numserie) {
         $this->load->model('equipo_software_model');
         $software_equipo = $this->equipo_software_model->getswequipo($numserie);
@@ -71,26 +72,28 @@ class Equipo_software extends CI_Controller {
     }
 
     public function agregaSos() {
+       
         $sos = $this->input->post('so');
         $numserie = $this->input->post('num_serie');
         $this->load->model('equipo_software_model');
         if (count($sos) >= 0 && $sos[0] != '') {
             $sepudo = $this->equipo_software_model->agrega_sos($numserie, $sos);
             if ($sepudo)
-            echo "ok"; else
-            echo "Error al asignar Sistemas Operativos.";
+                echo "ok"; else
+                echo "Error al asignar Sistemas Operativos.";
         }
     }
 
     public function agregaSw() {
+       
         $sw = $this->input->post('sw');
         $numserie = $this->input->post('num_serie');
         $this->load->model('equipo_software_model');
         if (count($sw) >= 0 && $sw[0] != '') {
             $sepudo = $this->equipo_software_model->agrega_sw($numserie, $sw);
-        if ($sepudo)
-            echo "ok"; else
-            echo "Error al asignar Software.";
+            if ($sepudo)
+                echo "ok"; else
+                echo "Error al asignar Software.";
         }
     }
 

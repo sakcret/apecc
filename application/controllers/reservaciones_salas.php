@@ -6,6 +6,26 @@ if (!defined('BASEPATH'))
 class Reservaciones_salas extends CI_Controller {
 
     public function index() {
+        //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        $login = $this->session->userdata('login');
+        if (!$login) {
+            redirect('acceso/acceso_denegado');
+        }
+        $this->load->library('utl_apecc');
+        //obtener el arreglo con los permisos para el usuario del sistema
+        $ptemp = $this->utl_apecc->getPermisos($this->session->userdata('puedo'));
+        //si el usuario tiene permisos asignados entonces obtengo la clave de permisos para el controlador usuarios
+        //que servirá como indice del arreglo de permisos y asi obtenerlos solo para el controlador actual(usuarios)
+        $permisos = '';
+        $prm_array = $this->config->item('prm_permisos');
+        if ($ptemp != FALSE) {
+            $rec = $this->config->item('clvp_reservaciones_salas');
+            (array_key_exists($rec, $ptemp)) ? $permisos = $this->utl_apecc->getCSS_prm($ptemp[$rec], $prm_array) : $permisos = $this->utl_apecc->getCSS_prm(FALSE, $prm_array);
+        } else {
+            $permisos = $this->utl_apecc->getCSS_prm(FALSE, $prm_array);
+        }
+        $contenido['permisos'] = $permisos;
+        
         $this->load->model('reservaciones_salas_model');
         $this->load->model('salas_model');
         //setlocale(LC_TIME, 'es_MX');
@@ -17,7 +37,7 @@ class Reservaciones_salas extends CI_Controller {
 
     function datosReservSalas() {
         $sIndexColumn = "IdReservSala";
-        $aColumns = array($sIndexColumn, 'Sala', 'NombreActividad', 'encargado', 'FechaInicio', 'FechaFin', 'HoraInicio', 'HoraFin');
+        $aColumns = array($sIndexColumn, 'Sala', 'NombreActividad', 'encargado', 'FechaInicio', 'FechaFin', 'HoraInicio', 'HoraFin','Estado');
         $sTable = "datos_reservsalas";
         $sLimit = "";
         if (isset($_GET['iDisplayStart']) && $_GET['iDisplayLength'] != '-1') {
@@ -82,27 +102,21 @@ class Reservaciones_salas extends CI_Controller {
                     $id = $aRow[$aColumns[$i]];
                     $row[] = $aRow[$aColumns[$i]];
                 } else {
-                    if ($aColumns[$i] == "Color") {
-                        $color = $aRow[$aColumns[$i]];
-                        $row[] = "<div id='c_$id' onclick=\"cambia_color($id,'" . $aRow[$aColumns[$i]] . "',$(this));\"class=\"color_actividad glass manita color_$id\"><div>";
-                        $row[] = $aRow[$aColumns[$i]];
-                    } else {
-                        if ($aColumns[$i] == "TipoActividad") {
-                            if ($aRow[$aColumns[$i]] == 0) {
-                                $row[] = 'Experiencia Educativa';
-                            } else {
-                                $row[] = 'Curso';
-                            }
+                    if ($aColumns[$i] == "Estado") {
+                        if ($aRow[$aColumns[$i]] == 'A') {
+                            $row[] = '<img src="images/status_actualizado.png" cambia_edo="I" class="opc prm_c" title="Cambiar estado" alt="Activa" onclick="cambia_estado($(this),\'' . $id . '\')"/>';
                         } else {
-                            $row[] = $aRow[$aColumns[$i]];
+                             $row[] = '<img src="images/status_no_actualizado.png" cambia_edo="A"  class="opc prm_c" title="Cambiar estado" alt="Activa" onclick="cambia_estado($(this),\'' . $id . '\')"/>';
                         }
+                    } else {
+                        $row[] = $aRow[$aColumns[$i]];
                     }
                 }
             }
-            $row[] = '<img src="images/modificar.png" class="opc" title="Modificar Reservaci&oacute;n de sala" alt="Modificar Reservaci&oacute;n de Sala" onclick="modifica_reservacion(\'' . $id . '\',\'' . $color . '\',$(\'#c_' . $id . '\'))"/>
-                      <img src="images/eliminar.png" class="opc" title="Cancelar Reservaci&oacute;n de sala" alt="Cancelar Reservaci&oacute;n de Sala" onclick="cancelar_reservacion(\'' . $id . '\')"/>';
+            $row[] = '<img src="images/modificar.png" class="opc prm_c" title="Modificar Reservaci&oacute;n de sala" alt="Modificar Reservaci&oacute;n de Sala" onclick="modifica_reservacion(\'' . $id . '\',\'' . $color . '\',$(\'#c_' . $id . '\'))"/>
+                      <img src="images/eliminar.png" class="opc prm_b" title="Cancelar Reservaci&oacute;n de sala" alt="Cancelar Reservaci&oacute;n de Sala" onclick="cancelar_reservacion(\'' . $id . '\')"/>';
             $output['aaData'][] = $row;
-        }
+        }//fin for
         echo $_GET['callback'] . '(' . json_encode($output) . ');';
     }
 
@@ -144,6 +158,16 @@ class Reservaciones_salas extends CI_Controller {
             echo 'Error al actualizar la reservaci&oacute;n de la sala.';
         }
     }
+    
+    function actualizaEstadoRS() {
+        $this->load->model('reservaciones_salas_model');
+        $id= $this->input->Post("id");
+        $st = $this->input->Post("st");
+        $sepudo = $this->reservaciones_salas_model->actualiza_estado($id, $st);
+        if ($sepudo)
+            echo 'ok'; else
+            echo "Error al actualizar el estado de la reservaci&oacute;n.";
+    }
 
     public function cancelarReservacion() {
         $idreserv = $this->input->post('id');
@@ -170,14 +194,15 @@ class Reservaciones_salas extends CI_Controller {
 
     function getDatosReserv() {
         $this->load->model("reservaciones_salas_model");
-        $idreserv = $this->input->Post("id"); 
+        $this->load->library("utl_apecc");
+        $idreserv = $this->input->Post("id");
         $rows = $this->reservaciones_salas_model->getdatosreserv($idreserv);
         foreach ($rows->result() as $row) {
             $jsondata['no'] = $row->NombreActividad;
             $jsondata['hi'] = $row->HoraInicio;
-            $jsondata['hf'] = $row->HoraFin;
-            $jsondata['fi'] = $row->FechaInicio;
-            $jsondata['ff'] = $row->FechaFin;
+            $jsondata['hf'] =  $row->HoraFin;
+            $jsondata['fi'] = $this->utl_apecc-> getdate_SQL($row->FechaInicio);
+            $jsondata['ff'] = $this->utl_apecc-> getdate_SQL($row->FechaFin);
             $jsondata['sa'] = $row->idSala;
             $jsondata['ec'] = $row->NumeroPersonal;
         }

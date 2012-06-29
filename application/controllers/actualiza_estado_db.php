@@ -83,20 +83,22 @@ class Actualiza_estado_db extends CI_Controller {
         }//fin si esta dentro del periodo
     }
 
-    private function reservaSala($hora) {
+    function reservaSala($hora) {
         $hoy = new DateTime(date('Y-m-d'));
         $this->load->model("actualiza_estado_db_model");
-        $datos_rs = $this->actualiza_estado_db_model->reservacionesSalas($hora);
+        $datos_rs = $this->actualiza_estado_db_model->reservacionesSalas($hora, true);
         $countrs = $datos_rs->num_rows();
         if ($countrs > 0) {
             //para cada una de las reservaciones hacer...
             for ($x = 0; $x < $countrs; $x++) {
+                //echo 'reservacion-'.$x.'<--';
                 $drs = $datos_rs->row_array($x);
                 $f_ini = new DateTime($drs['FechaInicio']);
                 $f_fin = new DateTime($drs['FechaFin']);
                 //si hoy esta entre fecha de inicio y fin de la actividad
                 if ($this->validaFechaPeriodo($f_ini, $f_fin, $hoy)) {
-                    $usuario = $drs['NumeroPersonal'];
+                    //echo 'si esta en rango<br>';
+                    $usuario = $drs['encargado'];
                     $act = ' En reservación de sala con la actividad: ' . $drs['NombreActividad'];
                     $tipoActAux = 2;
                     //obtener los equipos para una sala determinada
@@ -104,10 +106,13 @@ class Actualiza_estado_db extends CI_Controller {
                     //cambiar el comentario de la sala
                     $this->cambiaComentarioSala($drs['idSala'], $act);
                     $counteqsa = $datos_eq_sala->num_rows();
+                    echo 'en--' . $counteqsa;
                     if ($counteqsa > 0) {
+                        //para cada uno de los equipos de la sala
                         for ($y = 0; $y < $counteqsa; $y++) {
                             $des = $datos_eq_sala->row_array($y);
                             $numserie = $des['numserie'];
+                            //echo 'en--'.$numserie;
                             $horas = 1;
                             $importe = 0;
                             $edo = 'A'; //establecemos el estado de la reservacion a activa
@@ -127,19 +132,19 @@ class Actualiza_estado_db extends CI_Controller {
             }//fin for
         }//fin para todas las reservaciones
     }
-    
-    function liberaSalaRS($dia, $hora) {
-        $this->load->model("actualiza_estado_db_model");
-        $datos_rf = $this->actualiza_estado_db_model->reservacionesSalas($hora);
 
-        $countrf = $datos_rf->num_rows();
+    function liberaSalaRS($hora) {
+        $this->load->model("actualiza_estado_db_model");
+        $datos_rs = $this->actualiza_estado_db_model->reservacionesSalas($hora, false);
+
+        $countrf = $datos_rs->num_rows();
         if ($countrf > 0) {
             for ($x = 0; $x < $countrf; $x++) {
-                $drf = $datos_rf->row_array($x);
-                $this->actualiza_estado_db_model->terminaRF($dia, $drf['sala']);
-                $this->cambiaComentarioSala($drf['sala'], "");
+                $drf = $datos_rs->row_array($x);
+                $this->actualiza_estado_db_model->terminaRS($drf['idSala']);
+                $this->cambiaComentarioSala($drf['idSala'], "");
                 //obtener los equipos para una sala determinada
-                $datos_eq_sala = $this->getEquiposSalas($drf['sala']);
+                $datos_eq_sala = $this->getEquiposSalas($drf['idSala']);
                 $counteqsa = $datos_eq_sala->num_rows();
                 if ($counteqsa > 0) {
                     for ($y = 0; $y < $counteqsa; $y++) {
@@ -150,22 +155,22 @@ class Actualiza_estado_db extends CI_Controller {
             }
         }
     }
-
 
     function liberaSalaRF($dia, $hora) {
         $this->load->model("actualiza_estado_db_model");
         $datos_rf = $this->reservacionesFijas($dia, $hora);
-
         $countrf = $datos_rf->num_rows();
         if ($countrf > 0) {
+            //para cada reservacion fija
             for ($x = 0; $x < $countrf; $x++) {
                 $drf = $datos_rf->row_array($x);
-                $this->actualiza_estado_db_model->terminaRF($dia, $drf['sala']);
+                $this->actualiza_estado_db_model->terminaRF($drf['sala']);
                 $this->cambiaComentarioSala($drf['sala'], "");
                 //obtener los equipos para una sala determinada
                 $datos_eq_sala = $this->getEquiposSalas($drf['sala']);
                 $counteqsa = $datos_eq_sala->num_rows();
                 if ($counteqsa > 0) {
+                    //para cada equipo de la sala
                     for ($y = 0; $y < $counteqsa; $y++) {
                         $des = $datos_eq_sala->row_array($y);
                         $this->actualiza_estado_db_model->libera_equipo($des['numserie']);
@@ -175,25 +180,29 @@ class Actualiza_estado_db extends CI_Controller {
         }
     }
 
-
     private function liberaReservaciones($hora) {
         $this->load->model("actualiza_estado_db_model");
-        $reserv = $this->actualiza_estado_db_model->getReservacionesActivas();
+        $reserv = $this->actualiza_estado_db_model->getReservacionesActivas($hora . ':00');
         if ($reserv->num_rows() > 0) {
             foreach ($reserv->result() as $r) {
-                if ($r->HoraFin == $hora . ':00') {
-                    $this->actualiza_estado_db_model->liberaReservActiva($r->idReservacionesMomentaneas, $r->NumeroSerie);
-                }
+                // if ($r->HoraFin == $hora . ':00') {
+                $this->actualiza_estado_db_model->liberaReservActiva($r->idReservacionesMomentaneas, $r->NumeroSerie);
+                //}
             }
         }
     }
 
     function i() {
+        $this->load->model("actualiza_estado_db_model");
         setlocale(LC_TIME, 'es_MX');
         setlocale(LC_TIME, 'Spanish');
         $s = new DateTime($this->config->item('fecha_periodo_inicio'));
         echo 'fecha: ' . $s->format('l d F -- Y');
-        $this->reservaSala(1);
+        $this->actualiza_estado_db_model->terminaRF(1);
+        echo $this->db->last_query();
+        //$this->liberaSalaRF(1, 1);
+        //$this->reservaSala($this->gethoratexto(1).':00');
+        //$this->liberaSalaRS($this->gethoratexto(2).':00');
     }
 
     function actualizar_bd() {
@@ -209,10 +218,11 @@ class Actualiza_estado_db extends CI_Controller {
                     if ($ver_detalles) {
                         echo '----------Atendiendo peticion del dia lunes ' . $hoy . ' a las ' . $horatext . ' horas -----------';
                     }
-                    $this->reservaSala($horarf);
-                    /*$this->liberaSalaRF(1, $horarf, $diadehoy);
+                    $this->liberaSalaRS($horatext .':00');
+                    $this->reservaSala($horatext . ':00');
+                    $this->liberaSalaRF(1, $horarf, $diadehoy);
                     $this->liberaReservaciones($horatext);
-                    $this->reservaSalaRF(1, $horarf);*/
+                    $this->reservaSalaRF(1, $horarf);
                 }
                 break;
             //en caso que sea martes
@@ -221,6 +231,8 @@ class Actualiza_estado_db extends CI_Controller {
                     if ($ver_detalles) {
                         echo '----------Atendiendo peticion del dia martes ' . $hoy . ' a las ' . $horatext . ' horas -----------';
                     }
+                    $this->liberaSalaRS($horatext .':00');
+                    $this->reservaSala($horatext . ':00'); 
                     $this->liberaSalaRF(2, $horarf, $diadehoy);
                     $this->liberaReservaciones($horatext);
                     $this->reservaSalaRF(2, $horarf);
@@ -232,6 +244,8 @@ class Actualiza_estado_db extends CI_Controller {
                     if ($ver_detalles) {
                         echo '----------Atendiendo peticion del dia miercoles ' . $hoy . ' a las ' . $horatext . ' horas -----------';
                     }
+                    $this->liberaSalaRS($horatext .':00');
+                    $this->reservaSala($horatext . ':00');
                     $this->liberaSalaRF(3, $horarf, $diadehoy);
                     $this->liberaReservaciones($horatext);
                     $this->reservaSalaRF(3, $horarf);
@@ -243,6 +257,8 @@ class Actualiza_estado_db extends CI_Controller {
                     if ($ver_detalles) {
                         echo '----------Atendiendo peticion del dia jueves ' . $hoy . ' a las ' . $horatext . ' horas -----------';
                     }
+                    $this->liberaSalaRS($horatext .':00');
+                    $this->reservaSala($horatext . ':00');
                     $this->liberaSalaRF(4, $horarf, $diadehoy);
                     $this->liberaReservaciones($horatext);
                     $this->reservaSalaRF(4, $horarf);
@@ -254,6 +270,8 @@ class Actualiza_estado_db extends CI_Controller {
                     if ($ver_detalles) {
                         echo '----------Atendiendo peticion del dia viernes ' . $hoy . ' a las ' . $horatext . ' horas -----------';
                     }
+                    $this->liberaSalaRS($horatext .':00');
+                    $this->reservaSala($horatext . ':00');
                     $this->liberaSalaRF(5, $horarf, $diadehoy);
                     $this->liberaReservaciones($horatext);
                     $this->reservaSalaRF(5, $horarf);
@@ -265,6 +283,8 @@ class Actualiza_estado_db extends CI_Controller {
                     if ($ver_detalles) {
                         echo '----------Atendiendo peticion del dia sabado ' . $hoy . ' a las ' . $horatext . ' horas -----------';
                     }
+                    $this->liberaSalaRS($horatext .':00');
+                    $this->reservaSala($horatext . ':00');
                     $this->liberaSalaRF(6, $horarf, $diadehoy);
                     $this->liberaReservaciones($horatext);
                     $this->reservaSalaRF(6, $horarf);
@@ -276,6 +296,8 @@ class Actualiza_estado_db extends CI_Controller {
                     if ($ver_detalles) {
                         echo '----------Atendiendo peticion del dia domingo ' . $hoy . ' a las ' . $horatext . ' horas -----------';
                     }
+                    $this->liberaSalaRS($horatext .':00');
+                    $this->reservaSala($horatext . ':00');
                     $this->liberaSalaRF(1, $horarf, $diadehoy);
                     $this->liberaReservaciones($horatext);
                     $this->reservaSalaRF(7, $horarf);

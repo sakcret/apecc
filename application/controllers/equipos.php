@@ -6,6 +6,22 @@ if (!defined('BASEPATH'))
 class Equipos extends CI_Controller {
 
     public function index() {
+        //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        $login = $this->session->userdata('login');
+        if (!$login){
+            redirect('acceso/acceso_denegado');
+        }
+        $this->load->library('utl_apecc');
+        //obtener el arreglo con los permisos para el usuario del sistema
+        $ptemp=$this->utl_apecc->getPermisos($this->session->userdata('puedo'));
+        //si el usuario tiene permisos asignados entonces obtengo la clave de permisos para el controlador usuarios
+        //que servirá como indice del arreglo de permisos y asi obtenerlos solo para el controlador actual(usuarios)
+        if ($ptemp!=FALSE) {
+           $rec=  $this->config->item('clvp_equipos'); 
+        }
+        $prm_array=$this->config->item('prm_permisos'); 
+        $contenido['permisos'] = $this->utl_apecc->getCSS_prm($ptemp[$rec], $prm_array) ;
+        
         $this->load->model("equipos_model");
         $data['titulo_pag'] = "GESTI&Oacute;N DE EQUIPOS";
         //$data['include'] = '<script src="./js/j.js" type="text/javascript"></script>';
@@ -90,8 +106,8 @@ class Equipos extends CI_Controller {
                     }
                 }
             }
-            $row[] = '<img src="images/modificar.png" class="opc" title="Modificar" alt="Modificar" onclick="modifica_equipo(\'' . $id . '\')"/>
-                      <img src="images/eliminar.png" class="opc" title="Eliminar" alt="Eliminar" onclick="elimina_equipo(\'' . $id . '\')"/>';
+            $row[] = '<img src="images/modificar.png" class="opc prm_c" title="Modificar" alt="Modificar" onclick="modifica_equipo(\'' . $id . '\')"/>
+                      <img src="images/eliminar.png" class="opc prm_b" title="Eliminar" alt="Eliminar" onclick="elimina_equipo(\'' . $id . '\')"/>';
             $output['aaData'][] = $row;
         }
         echo $_GET['callback'] . '(' . json_encode($output) . ');';
@@ -115,6 +131,11 @@ class Equipos extends CI_Controller {
     }
 
     function eliminaEquipo() {
+        //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        $login = $this->session->userdata('login');
+        if (!$login){
+            redirect('acceso/acceso_denegado');
+        }
         $this->load->model("equipos_model");
         $numSer = $this->input->Post("id");
         $sepudo = $this->equipos_model->elimina_equipo($numSer);
@@ -124,6 +145,11 @@ class Equipos extends CI_Controller {
     }
 
     function agregaEquipo() {
+        //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        $login = $this->session->userdata('login');
+        if (!$login){
+            redirect('acceso/acceso_denegado');
+        }
         $this->load->model('equipos_model');
         $numSer = $this->input->Post("numser");
         $marca = $this->input->Post("marca");
@@ -139,6 +165,11 @@ class Equipos extends CI_Controller {
     }
 
     function modificaEquipo() {
+        //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        $login = $this->session->userdata('login');
+        if (!$login){
+            redirect('acceso/acceso_denegado');
+        }
         $this->load->model('equipos_model');
         $numSer = $this->input->Post("m_numser");
         $marca = $this->input->Post("m_marca");
@@ -155,6 +186,11 @@ class Equipos extends CI_Controller {
     }
 
     function actualizaStatusEquipo() {
+        //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        $login = $this->session->userdata('login');
+        if (!$login){
+            redirect('acceso/acceso_denegado');
+        }
         $this->load->model('equipos_model');
         $numSer = $this->input->Post("id");
         $st = $this->input->Post("st");

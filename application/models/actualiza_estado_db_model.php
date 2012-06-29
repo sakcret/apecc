@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 if (!defined('BASEPATH'))
     exit('Acceso denegado');
@@ -60,7 +60,7 @@ class Actualiza_estado_db_model extends CI_Model {
     function libera_equipo($ns) {
         $this->db->trans_begin();
         $this->db->where("NumeroSerie", $ns);
-        $this->db->where('Estado', 'O');
+        //$this->db->where('Estado', 'O');
         $this->db->update('equipos', array('Estado' => 'L'));
         if ($this->db->trans_status() === FALSE) {
             $this->db->trans_rollback();
@@ -93,7 +93,7 @@ class Actualiza_estado_db_model extends CI_Model {
         $this->db->insert('reservacionesmomentaneas', $insertreserv);
         //actualizar el estado del equipo a ocupado
         $this->db->where('NumeroSerie', $numserie);
-        $this->db->where('Estado', 'C');
+        //error $this->db->where('Estado', 'C');
         $this->db->update('equipos', $updatequipo);
         if ($this->db->trans_status() === FALSE) {
             $this->db->trans_rollback();
@@ -105,15 +105,20 @@ class Actualiza_estado_db_model extends CI_Model {
         return $result;
     }
 
-    function reservacionesSalas($hora) {
-        
-        return $this->db->query('select * from reservacionessalas where Estado=\'A\'');
+    function reservacionesSalas($hora,$eshorainicio) {
+        ($eshorainicio)?$wheredate=" and HoraInicio='$hora'":$wheredate="and HoraFin='$hora'";
+        return $this->db->query('select IdReservSala,NombreActividad,HoraFin,HoraInicio,idSala, Login as encargado,FechaInicio,FechaFin from reservacionessalas 
+join academicos on reservacionessalas.NumeroPersonal=academicos.NumeroPersonal
+where Estado=\'A\' '.$wheredate);
     }
 
     function terminaRF($sala) {
         $datos = array('Estado' => 'T');
         $this->db->trans_begin();
+        $this->db->where('Estado', 'A');
         $this->db->where('SalaAux', $sala);
+        $this->db->where('TipoActividadAux',1);
+        $this->db->or_where('TipoActividadAux',0);
         $this->db->update('reservacionesmomentaneas', $datos);
         if ($this->db->trans_status() === FALSE) {
             $this->db->trans_rollback();
@@ -124,10 +129,17 @@ class Actualiza_estado_db_model extends CI_Model {
         }
         return $result;
     }
-
-    function getReservacionesActivas() {
-        return $this->db->query('select * from reservacionesmomentaneas where Estado=\'A\' and TipoActividadAux=-1');
+    
+    function terminaRS($sala){
+        $query ="select * from reservacionesmomentaneas where Estado='A' and SalaAux=$sala and TipoActividadAux=2";
+         return $this->db->query($query);
+        
     }
+    
+    function getReservacionesActivas($horafin) {
+        return $this->db->query('select * from reservacionesmomentaneas where Estado=\'A\' and TipoActividadAux=-1 and horaFin=\''.$horafin.'\'');
+    }
+    
 
     function liberaReservActiva($idreserv, $equipo) {
         $this->db->trans_begin();

@@ -3,37 +3,28 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Actividades extends CI_Controller {
+class Usuarios_sistema extends CI_Controller {
+
     public function index() {
         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
         $login = $this->session->userdata('login');
-        if (!$login){
+        if (!$login) {
             redirect('acceso/acceso_denegado');
         }
-        $this->load->library('utl_apecc');
-        $this->load->model("actividades_model");
-        //obtener el arreglo con los permisos para el usuario del sistema
-        $ptemp=$this->utl_apecc->getPermisos($this->session->userdata('puedo'));
-        //si el usuario tiene permisos asignados entonces obtengo la clave de permisos para el controlador usuarios
-        //que servirá como indice del arreglo de permisos y asi obtenerlos solo para el controlador actual(usuarios)
-        if ($ptemp!=FALSE) {
-           $rec=  $this->config->item('clvp_actividades'); 
+        $rol = $this->session->userdata('rol');
+        if ($rol == 'A') {
+            $data['titulo_pag'] = "GESTI&Oacute;N DE USUARIOS DEL SISTEMA - CCFEI";
+            $data['contenido'] = $this->load->view('usuarios_sistema_view', $contenido = '', true);
+            $this->load->view('plantilla', $data);
+        } else {
+            redirect('inicio');
         }
-        $prm_array=$this->config->item('prm_permisos'); 
-        $contenido['permisos'] = $this->utl_apecc->getCSS_prm($ptemp[$rec], $prm_array) ;
-        
-        $data['titulo_pag'] = "GESTI&Oacute;N DE ACTIVIDADES - CCFEI";
-        $contenido['include'] = '<script type="text/javascript" language="javascript" src="./js/farbtastic.js"></script>' . PHP_EOL .
-                '<link rel="stylesheet" href="css/farbtastic/farbtastic.css" type="text/css"/>' . PHP_EOL;
-        $contenido['actividades_color'] = $this->actividades_model->actividades_color();
-        $data['contenido'] = $this->load->view('actividades_view', $contenido, true);
-        $this->load->view('plantilla', $data);
     }
 
-    public function datosActividades() {
-        $aColumns = array('idActividad', 'Actividad', 'NombreCorto', 'TipoActividad', 'Color','FechaInicio','FechaFin');
-        $sIndexColumn = "idActividad";
-        $sTable = "actividades";
+    public function datosUsuariosSistema() {
+        $sIndexColumn = "login";
+        $aColumns = array($sIndexColumn, 'pass', 'nombre','rol', 'correo', 'permisos');
+        $sTable = "usuariossistema";
         $sLimit = "";
         if (isset($_GET['iDisplayStart']) && $_GET['iDisplayLength'] != '-1') {
             $sLimit = "LIMIT " . $_GET['iDisplayStart'] . ", " .
@@ -97,35 +88,20 @@ class Actividades extends CI_Controller {
                     $id = $aRow[$aColumns[$i]];
                     $row[] = $aRow[$aColumns[$i]];
                 } else {
-                    if ($aColumns[$i] == "Color") {
-                        $color = $aRow[$aColumns[$i]];
-                        $row[] = "<div id='c_$id' onclick=\"cambia_color($id,'" . $aRow[$aColumns[$i]] . "',$(this));\"class=\"color_actividad glass manita color_$id\"><div>";
-                        $row[] = $aRow[$aColumns[$i]];
-                    } else {
-                        if ($aColumns[$i] == "TipoActividad") {
-                            if ($aRow[$aColumns[$i]] == 0) {
-                                $row[] = 'Experiencia Educativa';
-                            } else {
-                                $row[] = 'Curso';
-                            }
-                        } else {
-                            $row[] = $aRow[$aColumns[$i]];
-                        }
-                    }
+                    $row[] = $aRow[$aColumns[$i]];
                 }
             }
             $row[] = '<img src="images/modificar.png" class="opc prm_c" title="Modificar" alt="Modificar" onclick="modifica_actividad(\'' . $id . '\',\'' . $color . '\',$(\'#c_' . $id . '\'))"/>
-                      <img src="images/eliminar.png" class="opc prm_b" title="Eliminar" alt="Eliminar" onclick="elimina_actividad(\'' . $id . '\')"/>
-                      <img src="images/users.png" class="opc prm_s" title="Asignar a cated&aacute;tico" alt="Asignar" onclick="asignar_actividad(\'' . $id . '\')"/>';
+                      <img src="images/eliminar.png" class="opc prm_b" title="Eliminar" alt="Eliminar" onclick="elimina_actividad(\'' . $id . '\')"/>';
             $output['aaData'][] = $row;
         }
         echo $_GET['callback'] . '(' . json_encode($output) . ');';
     }
 
-    function getActividades() {
-        $this->load->model("actividades_model");
+    function getUsuarios_sistema() {
+        $this->load->model("usuarios_sistema_model");
         $login = $this->input->Post("id"); //obtengo por medio de post el valor de num_per
-        $rows = $this->actividades_model->getActividades($login);
+        $rows = $this->usuarios_sistema_model->getUsuarios_sistema($login);
         foreach ($rows->result() as $row) {
             $jsondata['lo'] = $row->login;
             $jsondata['ma'] = $row->matricula;
@@ -142,13 +118,13 @@ class Actividades extends CI_Controller {
     function cambiaColor() {
         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
         $login = $this->session->userdata('login');
-        if (!$login){
+        if (!$login) {
             redirect('acceso/acceso_denegado');
         }
-        $this->load->model("actividades_model");
+        $this->load->model("usuarios_sistema_model");
         $id = $this->input->Post("id");
         $color = $this->input->Post("color");
-        $sepudo = $this->actividades_model->cambiacolor($id, $color);
+        $sepudo = $this->usuarios_sistema_model->cambiacolor($id, $color);
         if ($sepudo)
             echo 'ok'; else
             echo "Se produjo un error al eliminar la actividad.";
@@ -157,12 +133,12 @@ class Actividades extends CI_Controller {
     function eliminaActividad() {
         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
         $login = $this->session->userdata('login');
-        if (!$login){
+        if (!$login) {
             redirect('acceso/acceso_denegado');
         }
-        $this->load->model("actividades_model");
+        $this->load->model("usuarios_sistema_model");
         $id = $this->input->Post("id");
-        $sepudo = $this->actividades_model->elimina_actividad($id);
+        $sepudo = $this->usuarios_sistema_model->elimina_actividad($id);
         if ($sepudo)
             echo 'ok'; else
             echo "Se produjo un error al eliminar la actividad.";
@@ -171,12 +147,12 @@ class Actividades extends CI_Controller {
     function desasignaActividad() {
         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
         $login = $this->session->userdata('login');
-        if (!$login){
+        if (!$login) {
             redirect('acceso/acceso_denegado');
         }
-        $this->load->model("actividades_model");
+        $this->load->model("usuarios_sistema_model");
         $id = $this->input->Post("id");
-        $sepudo = $this->actividades_model->desasigna_actividad($id);
+        $sepudo = $this->usuarios_sistema_model->desasigna_actividad($id);
         if ($sepudo)
             echo 'ok'; else
             echo "Se produjo un error al eliminar la actividad.";
@@ -185,10 +161,10 @@ class Actividades extends CI_Controller {
     function agregaActividad() {
         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
         $login = $this->session->userdata('login');
-        if (!$login){
+        if (!$login) {
             redirect('acceso/acceso_denegado');
         }
-        $this->load->model('actividades_model');
+        $this->load->model('usuarios_sistema_model');
         $nombre = $this->input->Post("nombre");
         $nombre_corto = $this->input->Post("nombre_corto");
         $tipo_act = $this->input->Post("tipo_act");
@@ -206,7 +182,7 @@ class Actividades extends CI_Controller {
             $f1 = $hoy;
             $f2 = $hoy;
         }
-        $sepudo = $this->actividades_model->agrega_actividad($nombre, $nombre_corto, $tipo_act, $color, $f1, $f2);
+        $sepudo = $this->usuarios_sistema_model->agrega_actividad($nombre, $nombre_corto, $tipo_act, $color, $f1, $f2);
         if ($sepudo)
             echo 'ok'; else
             echo "Se produjo un error al agregar la Actividad.";
@@ -215,15 +191,15 @@ class Actividades extends CI_Controller {
     function asignaActividad() {
         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
         $login = $this->session->userdata('login');
-        if (!$login){
+        if (!$login) {
             redirect('acceso/acceso_denegado');
         }
-        $this->load->model('actividades_model');
+        $this->load->model('usuarios_sistema_model');
         $id_act = $this->input->Post("id_act");
         $catedratico = $this->input->Post("catedraticos");
         $bloque = $this->input->Post("bloque_act");
         $seccion = $this->input->Post("seccion_act");
-        $sepudo = $this->actividades_model->asigna_actividad($id_act, $catedratico, $bloque, $seccion);
+        $sepudo = $this->usuarios_sistema_model->asigna_actividad($id_act, $catedratico, $bloque, $seccion);
         if ($sepudo)
             echo 'ok'; else
             echo "Se produjo un error al agregar la Actividad.";
@@ -232,34 +208,34 @@ class Actividades extends CI_Controller {
     function modificaActividad() {
         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
         $login = $this->session->userdata('login');
-        if (!$login){
+        if (!$login) {
             redirect('acceso/acceso_denegado');
         }
-        $this->load->model('actividades_model');
+        $this->load->model('usuarios_sistema_model');
         $id = $this->input->Post("id_act");
         $nombre = $this->input->Post("m_nombre");
         $nombre_corto = $this->input->Post("m_nombre_corto");
         $color = $this->input->Post("m_color");
-        $sepudo = $this->actividades_model->modifica_actividad($id, $nombre, $nombre_corto, $color);
+        $sepudo = $this->usuarios_sistema_model->modifica_actividad($id, $nombre, $nombre_corto, $color);
         if ($sepudo)
             echo 'ok'; else
             echo "Se produjo un error al modificar la Actividad.";
     }
 
-    function actualizaStatusActividades() {
-        $this->load->model('actividades_model');
+    function actualizaStatusUsuarios_sistema() {
+        $this->load->model('usuarios_sistema_model');
         $login = $this->input->Post("id");
         $st = $this->input->Post("st");
-        $sepudo = $this->actividades_model->actualiza_st_actividades($login, $st);
+        $sepudo = $this->usuarios_sistema_model->actualiza_st_usuarios_sistema($login, $st);
         if ($sepudo)
             echo 'ok'; else
-            echo "Error al actualizar el estado del actividades con el login <b>$login</b>.";
+            echo "Error al actualizar el estado del usuarios_sistema con el login <b>$login</b>.";
     }
 
     function getActividad() {
-        $this->load->model("actividades_model");
+        $this->load->model("usuarios_sistema_model");
         $id = $this->input->Post("id");
-        $rows = $this->actividades_model->getactividad($id);
+        $rows = $this->usuarios_sistema_model->getactividad($id);
         foreach ($rows->result() as $row) {
             $jsondata['no'] = $row->Actividad;
             $jsondata['nc'] = $row->NombreCorto;
@@ -270,9 +246,9 @@ class Actividades extends CI_Controller {
     }
 
     function getCatedraticosActividad() {
-        $this->load->model("actividades_model");
+        $this->load->model("usuarios_sistema_model");
         $id = $this->input->Post("idact");
-        $rows = $this->actividades_model->getcatedraticosactividad($id);
+        $rows = $this->usuarios_sistema_model->getcatedraticosactividad($id);
         $i = 0;
         foreach ($rows->result() as $row) {
             $jsondata[$i]['id'] = $row->id;
@@ -288,3 +264,4 @@ class Actividades extends CI_Controller {
 
 }
 
+?>

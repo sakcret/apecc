@@ -6,19 +6,21 @@ if (!defined('BASEPATH'))
 class Inicio extends CI_Controller {
 
     public function index() {
-        $this->load->model("inicio_model");
+        // $this->load->model("inicio_model");
+        $data['titulo_pag'] = "INICIO - CCFEI";
+        $contenido['include'] = '<script type="text/javascript" language="javascript" src="./js/highcharts/highcharts.js"></script>' . PHP_EOL .
+                '<script type="text/javascript" language="javascript" src="./js/highcharts/modules/exporting.js"></script>' . PHP_EOL;
+
         $data['contenido'] = $this->load->view('inicio_view', $contenido, true);
         $this->load->view('plantilla', $data);
     }
-    
-    function actualiza_cache(){
+
+    function actualiza_cache() {
         $this->load->model("sql_generico_model");
-        $sepudo=$this->sql_generico_model->borra_todo_cache();
+        $sepudo = $this->sql_generico_model->borra_todo_cache();
         if ($sepudo)
             echo 'ok'; else
             echo '<b>Error Fatal...</b><br/> No se ha podido actualizar el cache. Por lo que la informaci&oacute;n no ser&aacute; confiable.';
-        
-        
     }
 
 }

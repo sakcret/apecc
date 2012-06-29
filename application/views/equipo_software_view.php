@@ -173,6 +173,7 @@
         headerSelected: "ui-icon-circle-arrow-s"
     };
     function asigna_sw(ns,edo){
+        $('#dialog_asigna_sw').addClass('prm_w');
         if(edo=='L'){
             $('#num_serie').val(ns);
             try{
@@ -193,7 +194,6 @@
             
             mensaje($( "#mensaje" ),'Asignaci&oacute;n  de Software','./images/msg/warning.png','<b>No se puede asignar software al equipo</b> <hr class="boxshadowround"/>','No se puede asignar software al equipo <b>'+ns+'</b>, ya que se encuentra <b>'+getStringEdo(edo)+'</b>.');
         }
-          
     }
     
     $(function() {
@@ -272,4 +272,3 @@
     }
     .total-eq{margin-right: 15px; font-weight: bolder; float: right !important;}
 </style><br>
-

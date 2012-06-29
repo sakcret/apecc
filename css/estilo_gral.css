@@ -3,6 +3,7 @@
     font-size:13px !important;
 
 }
+
 .header{text-align:center; height:30px; width:100%; font-size: 18px !important; }
 /*sobreescribo la clase conteiner del cssgrid1140 para tener mas padding*/
 .container {padding-left: 50px !important;padding-right: 50px !important;}
@@ -10,14 +11,18 @@
 /* Estilo para los componetes principales de la maquetacion de la plantilla*/
 #header{margin-top: 10px !important; margin-bottom: 15px !important; height:100px !important;}
 #titulo_pag{ width: 99.9% !important; height: 40px; margin-top: 15px;}
-.label_titulo{ text-align: center; margin-top: 5px; font-size: 20px !important;}
+.label_titulo{ margin-top: 5px; font-size: 20px !important;}
 #content{}
 
 .readonly{
     color:#A19B9E;
 }
 .paddleft5{ padding-left: 6px;}
-
+/*Tamaño de la imagen de usuario en la barra de perfil*/
+.img_user{
+    width: 32px !important;
+    height: 32px !important;
+}
 .but_bar_content{ height: 38px !important; margin-bottom: 10px !important;}
 .no_edit{
     background-color: #A19B9E !important;
@@ -52,7 +57,30 @@
     margin-left: 10px;
     margin-bottom: 10px;
 }
+/* estilo para el menu lateral*/
+.sweetMenuAnchor{
+    border-top: 1px solid #ffffff;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+    border-top-right-radius: 4px;
+    -moz-border-radius-topright: 4px;
+    border-bottom-right-radius: 4px;
+    -moz-border-radius-bottomright: 4px;
+    color: #0071bb;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: right;
+    text-transform: uppercase;
+    font-family: arial;
+    text-decoration: none;
+    background-color: #888888;
+    opacity: 0.9;
+}
 
+.sweetMenuAnchor span{
+    display: block;
+    padding-top: 10px;
+}
 
 .glass{
     background-image:url(../images/glass.png); height:auto;
@@ -110,10 +138,10 @@ div#users-contain table td, div#users-contain table th { border: 1px solid #eee;
 .ui-spinner-button {overflow: hidden}
 
 .transparencia {
-   opacity: .80;
-   -moz-opacity: .80;
-   filter:alpha(opacity=80);
-   float: left;
+    opacity: .80;
+    -moz-opacity: .80;
+    filter:alpha(opacity=80);
+    float: left;
 } 
 
 

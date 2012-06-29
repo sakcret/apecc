@@ -1,5 +1,7 @@
 $(function() {
-    
+     
+            
+    //links para el menu principal                    
     $( "#nav" ).buttonset();
     $( "#btn_conf" );
     $( "#btn_reload" ).click(function(){
@@ -62,7 +64,6 @@ $(function() {
     }
     );
         
-        
     //menu accesible lateral izquieda				
     $('#acess_menu').sweetMenu({
         top: 200,
@@ -71,12 +72,55 @@ $(function() {
         easing: 'easeOutBounce',
         duration: 500,
         icons: [
-        './images/home.png',
-        './images/refresh.png',
-        './images/usuarios.png',
-        './images/salir.png',
-        './images/info_2.png'
+        './images/menu_lt/home.png',
+        './images/menu_lt/refresh.png',
+        './images/menu_lt/usuarios.png',
+        './images/menu_lt/computer.png',
+        './images/menu_lt/salir.png',
+        './images/menu_lt/info.png'
         ]
     });
+    
+    //acciones para el menu lateral
+    $("#ml_hm").click(function(){
+        redirect_to('inicio');
+    }
+    );
+    $("#ml_us").click(function(){
+        redirect_to('usuarios');
+    }
+    );
+    $("#ml_rm").click(function(){
+        redirect_to('reservaciones_temporales');
+    }
+    );
+    $("#ml_ex").click(function(){
+        cerrar_sesion();
+    }
+    ); 
+    $("#ml_hp").click(function(){
+        redirect_to('help');
+    }
+    );     
+    //menu principal
+    $("#ulMenu").menubar({
+        menuIcon: true,
+        buttons: true,
+        position: {
+            within: $("#demo-frame").add(window).first()
+        },
+        select: function(event, ui) {
+            $("<div/>").text("Selected: " + ui.item.text()).appendTo("#log");
+        }
+    });
+    $(".no-icon").find(".ui-button-icon-secondary").removeClass("ui-icon ui-icon-triangle-1-s"); 
+    $('#refresh').hover(
+        function(){
+            $(this).addClass('transparencia')
+        },
+        function(){
+            $(this).removeClass('transparencia')
+        }
+        );      
 });
 

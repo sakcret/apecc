@@ -19,8 +19,11 @@
                 <tr>
                     <td colspan="3"><label for="encargado">Encargado*:</label><br>
                         <select name="encargado" id="encargado"/>
-                        </select>
+                        </select></td>
                 </tr>
+                <!--tr>
+                    <td colspan="3"><div style=" margin-bottom: 3px;margin-top: 3px;"><input class="checkbox-ui" type="checkbox" name="solo_hoy"  id="solo_hoy" /><label for="solo_hoy">&nbsp;&nbsp;&nbsp;Solo este d&iacute;a.</label></div></td>
+                </tr-->
                 <tr>
                     <td><label for="hora_inicio">Hora de Inicio*:</label>
                         <input type="text" name="hora_inicio" id="hora_inicio" maxlength="25" class="text ui-widget-content ui-corner-all" /></td>
@@ -89,6 +92,7 @@
             <input type="checkbox" onclick="verOcultarColDT(5,dt_reservsalas);" checked="checked" name="vo_fecha_fin" id="vo_fecha_fin" ><label for="vo_fecha_fin">Fecha Fin</label>
             <input type="checkbox" onclick="verOcultarColDT(6,dt_reservsalas);" checked="checked" name="vo_hora_inicio" id="vo_hora_inicio" ><label for="vo_hora_inicio">Hora Inicio</label>
             <input type="checkbox" onclick="verOcultarColDT(7,dt_reservsalas);" checked="checked" name="vo_hora_fin" id="vo_hora_fin" ><label for="vo_hora_fin">Hora Fin</label>
+            <input type="checkbox" onclick="verOcultarColDT(8,dt_reservsalas);" checked="checked" name="vo_edo" id="vo_edo" ><label for="vo_edo">Estado</label>
         </div>
     </center>
 </div>
@@ -112,53 +116,47 @@
                     <td align="center"><input class="checkbox-ui" type="checkbox" name="global_smart"  id="global_smart"  checked></td>
                 </tr>
                 <tr id="filter_col2">
-                    <td align="left">Marca</td>
+                    <td align="left">Sala</td>
                     <td align="center"><input type="text"     name="col2_filter" id="col2_filter" class="text ui-widget-content ui-corner-all"></td>
                     <td align="center"><input class="checkbox-ui" type="checkbox" name="col2_regex"  id="col2_regex"></td>
                     <td align="center"><input class="checkbox-ui" type="checkbox" name="col2_smart"  id="col2_smart" checked></td>
                 </tr>
                 <tr id="filter_col3">
-                    <td align="left">hora_inicio</td>
+                    <td align="left">Actividad</td>
                     <td align="center"><input type="text"     name="col3_filter" id="col3_filter" class="text ui-widget-content ui-corner-all"></td>
                     <td align="center"><input class="checkbox-ui" type="checkbox" name="col3_regex"  id="col3_regex"></td>
                     <td align="center"><input class="checkbox-ui" type="checkbox" name="col3_smart"  id="col3_smart" checked></td>
                 </tr>
                 <tr id="filter_col4">
-                    <td align="left">N&uacute;mero de Inventario</td>
+                    <td align="left">Encargado</td>
                     <td align="center"><input type="text"     name="col4_filter" id="col4_filter" class="text ui-widget-content ui-corner-all"></td>
                     <td align="center"><input class="checkbox-ui" type="checkbox" name="col4_regex"  id="col4_regex"></td>
                     <td align="center"><input class="checkbox-ui" type="checkbox" name="col4_smart"  id="col4_smart" checked></td>
                 </tr>
                 <tr id="filter_col5">
-                    <td align="left">encargado</td>
+                    <td align="left">Fecha Inicio</td>
                     <td align="center"><input type="text"     name="col5_filter" id="col5_filter" class="text ui-widget-content ui-corner-all" ></td>
                     <td align="center"><input class="checkbox-ui" type="checkbox" name="col5_regex"  id="col5_regex"></td>
                     <td align="center"><input class="checkbox-ui" type="checkbox" name="col5_smart"  id="col5_smart" checked></td>
                 </tr>
                 <tr id="filter_col6">
-                    <td align="left">Disco Duro(GB)</td>
+                    <td align="left">Fecha Fin</td>
                     <td align="center"><input type="text"     name="col6_filter" id="col6_filter" class="text ui-widget-content ui-corner-all" ></td>
                     <td align="center"><input class="checkbox-ui" type="checkbox" name="col6_regex"  id="col6_regex"></td>
                     <td align="center"><input class="checkbox-ui" type="checkbox" name="col6_smart"  id="col6_smart" checked></td>
                 </tr>
                 <tr id="filter_col7">
-                    <td align="left">Memoria RAM(GB)</td>
+                    <td align="left">Hora inicio</td>
                     <td align="center"><input type="text"     name="col7_filter" id="col7_filter" class="text ui-widget-content ui-corner-all" ></td>
                     <td align="center"><input class="checkbox-ui" type="checkbox" name="col7_regex"  id="col7_regex"></td>
                     <td align="center"><input class="checkbox-ui" type="checkbox" name="col7_smart"  id="col7_smart" checked></td>
                 </tr>
                 <tr id="filter_col8">
-                    <td align="left">Estado(solo la letra clave)</td>
+                    <td align="left">Hora Fin</td>
                     <td align="center"><input type="text"     name="col8_filter" id="col8_filter" class="text ui-widget-content ui-corner-all" ></td>
                     <td align="center"><input class="checkbox-ui" type="checkbox" name="col8_regex"  id="col8_regex"></td>
                     <td align="center"><input class="checkbox-ui" type="checkbox" name="col8_smart"  id="col8_smart" checked></td>
                 </tr>
-                <!--tr id="filter_col9">
-                    <td align="left">Descripci&oacute;n</td>
-                    <td align="center"><input type="text"     name="col9_filter" id="col9_filter" class="text ui-widget-content ui-corner-all" ></td>
-                    <td align="center"><input type="checkbox" name="col9_regex"  id="col9_regex"></td>
-                    <td align="center"><input type="checkbox" name="col9_smart"  id="col9_smart" checked></td>
-                </tr-->
             </tbody>
         </table>
     </center>
@@ -170,9 +168,9 @@
             <div class="ui-widget-header ui-corner-all" style=" margin-bottom: 0px; height: 38px;">
                 <div style="margin-top: 3px; margin-left: 6px;">
                     <button id="btn_actualiza"><img src="./images/actualizar.png"/>&nbsp;Actualizar</button>
-                    <button id="btn_agregar"><img src="./images/agregar.png"/>&nbsp;Nueva Reservaci&oacute;n</button>
-                    <button id="btn_modificar"><img src="./images/modificar.png"/>&nbsp;Modificar Reservaci&oacute;n</button>
-                    <button id="btn_eliminar"><img src="./images/eliminar.png"/>&nbsp;Cancelar Reservaci&oacute;n</button>
+                    <button id="btn_agregar" class="prm_a"><img src="./images/agregar.png"/>&nbsp;Nueva Reservaci&oacute;n</button>
+                    <button id="btn_modificar" class="prm_c"><img src="./images/modificar.png"/>&nbsp;Modificar Reservaci&oacute;n</button>
+                    <button id="btn_eliminar" class="prm_b"><img src="./images/eliminar.png"/>&nbsp;Cancelar Reservaci&oacute;n</button>
                     <button style="height: 29px !important; width: 200px;" id="mas_opc_busq"class="opc ui-icon-search">Ver busqueda avanzada</button>
                     <button style="height: 29px !important; width: 200px;" id="b_ver_campos"class="opc">Ver opciones de campos</button>
                 </div>
@@ -190,6 +188,7 @@
                     <th>Fecha Fin</th>
                     <th>Hora Inicio</th>
                     <th>Hora Fin</th>
+                     <th>Estado</th>
                     <th>Opciones</th>
                 </tr>
                 </tr>
@@ -209,6 +208,7 @@
                     <th>Fecha Fin</th>
                     <th>Hora Inicio</th>
                     <th>Hora Fin</th>
+                     <th>Estado</th>
                     <th>Opciones</th>
                 </tr>
             </tfoot>
@@ -224,6 +224,28 @@
         "07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00",
         "15:00","16:00","17:00","18:00","19:00","20:00","21:00"
     ];
+    
+    function cambia_estado(o,id){
+        var est=o.attr("cambia_edo");
+        var actua='';
+        var datos ="id="+id+'&st='+est;
+        var urll="index.php/reservaciones_salas/actualizaEstadoRS";
+        var respuesta = ajax_peticion(urll,datos);
+        if (respuesta=='ok'){
+            if(est=='A'){
+                o.attr('src','./images/status_actualizado.png');
+                o.attr('cambia_edo','I');
+                actua='Activa';
+            }else{
+                 o.attr('src','./images/status_no_actualizado.png');
+                o.attr('cambia_edo','A');
+                actua='Inactiva';
+            }
+            notificacion_tip("./images/msg/ok.png","Actualizar Estado de reservaci&oacute;n","La reservaci&oacute;n se encuentra <b> '"+actua+"'</b>.");   
+        }else{
+            mensaje($( "#mensaje" ),'Error ! ','./images/msg/error.png',respuesta,'<span class="ui-icon ui-icon-lightbulb"></span>Actualiza la pagina e intenta de nuevo. Si el <b>Error</b> persiste consulta al administrador.');
+        }
+    }
     
     /*Funcion para aplicar filtro global en el datatable equipos*/
     function fnFilterGlobal (){
@@ -373,7 +395,6 @@
                     bValid = bValid && validaCampoExpReg( fecha_fin,/^\d{2}\/\d{2}\/\d{4}$/, "El formato de la fecha debe ser: dd/mm/aaaa. Ejemplo: '05/06/2012'",tips);          
                     if ( bValid ) {  
                         var datos = $( "#form_modifica_reservsala" ).serialize()+'&id='+id;
-                        alert(datos);
                         var urll="index.php/reservaciones_salas/modificaReservacion";
                         var respuesta = ajax_peticion(urll,datos);
                         if (respuesta=='ok'){
@@ -397,7 +418,7 @@
     }
     
     $(document).ready(function() {
-        var dates = $( "#fecha_inicio, #fecha_fin" ).datepicker({
+        /*var dates = $( "#fecha_inicio, #fecha_fin" ).datepicker({
             defaultDate: "+1w",
             changeMonth: true,
             onSelect: function( selectedDate ) {
@@ -410,20 +431,23 @@
                 dates.not( this ).datepicker( "option", option, date );
             }
         });
+var dates = $( "#m_fecha_inicio, #m_fecha_fin" ).datepicker({
+            defaultDate: "+1w",
+            changeMonth: true,
+            onSelect: function( selectedDate ) {
+                var option = this.id == "from" ? "minDate" : "maxDate",
+                instance = $( this ).data( "datepicker" ),
+                date = $.datepicker.parseDate(
+                instance.settings.dateFormat ||
+                    $.datepicker._defaults.dateFormat,
+                selectedDate, instance.settings );
+                dates.not( this ).datepicker( "option", option, date );
+            }
+        });*/
         
-        var dates = $( "#m_fecha_inicio, #m_fecha_fin" ).datepicker({
-            defaultDate: "+1w",
-            changeMonth: true,
-            onSelect: function( selectedDate ) {
-                var option = this.id == "from" ? "minDate" : "maxDate",
-                instance = $( this ).data( "datepicker" ),
-                date = $.datepicker.parseDate(
-                instance.settings.dateFormat ||
-                    $.datepicker._defaults.dateFormat,
-                selectedDate, instance.settings );
-                dates.not( this ).datepicker( "option", option, date );
-            }
-        });
+        $( "#fecha_inicio, #fecha_fin,#m_fecha_inicio, #m_fecha_fin" ).datepicker();
+        
+        
              
         $('#hora_inicio,#hora_fin,#m_hora_inicio,#m_hora_fin').autocomplete({
             source: horas_src
@@ -664,3 +688,4 @@
     }
 
 </style>
+<?php echo '<style type="text/css">'.$permisos.'</style>'; ?>

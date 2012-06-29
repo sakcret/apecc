@@ -10,13 +10,13 @@ class Reportes extends CI_Controller {
         $this->load->model("salas_model");
         $data['titulo_pag'] = "REPORTES - CCFEI";
         $contenido['include'] = '<script type="text/javascript" language="javascript" src="./js/highcharts/highcharts.js"></script>' . PHP_EOL .
-                $contenido['include'] = '<script type="text/javascript" language="javascript" src="./js/highcharts/modules/exporting.js"></script>' . PHP_EOL;
+                '<script type="text/javascript" language="javascript" src="./js/highcharts/modules/exporting.js"></script>' . PHP_EOL;
         $contenido['salas'] = $this->salas_model->datos_salas();
         foreach ($contenido['salas']->result() as $sala) {
             $data_salas[$sala->idSala] = $this->reportes_model->reserv_data($sala->idSala);
         }
         $contenido['datos_salas'] = $data_salas;
-        
+
         $data['contenido'] = $this->load->view('reportes_view', $contenido, true);
         $this->load->view('plantilla', $data);
     }
@@ -231,7 +231,7 @@ class Reportes extends CI_Controller {
     }
 
     function d() {
-      $this->load->model('reportes_model');
+        $this->load->model('reportes_model');
         $vista = '<h1>holas</h1><hr>adrian!!!';
         $this->load->library('mpdf');
         //$this->mpdf->StartProgressBarOutput(2);
@@ -242,7 +242,7 @@ class Reportes extends CI_Controller {
         $this->mpdf->SetFooter('Página {PAGENO} de {nbpg}');
         $this->mpdf->WriteHTML('<h1>holas</h1><hr>adrian!!!');
         $this->mpdf->Output();
-      }
+    }
 
     function getCatedraticosActividad() {
         $this->load->model("reportes_model");

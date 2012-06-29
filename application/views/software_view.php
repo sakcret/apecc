@@ -226,11 +226,11 @@
             </ul>
             <div id="tabs-1">
                 <div class="ui-widget-header ui-corner-all but_bar_content">
-                    <button id="btn_agregar_sw" class="but_bar"><img src="./images/agregar.png"/>&nbsp;Agregar</button>
-                    <button id="btn_modificar_sw" class="but_bar"><img src="./images/modificar.png"/>&nbsp;Modificar</button>
+                    <button id="btn_agregar_sw" class="but_bar prm_a"><img src="./images/agregar.png"/>&nbsp;Agregar</button>
+                    <button id="btn_modificar_sw" class="but_bar prm_c"><img src="./images/modificar.png"/>&nbsp;Modificar</button>
                     <button id="btn_actualizar_sw" class="but_bar"><img src="./images/actualizar.png"/>&nbsp;Actualizar</button>
-                    <button id="btn_eliminar_sw" class="but_bar"><img src="./images/eliminar.png"/>&nbsp;Eliminar</button>
-                    <button id="btn_asignar_grupo_sw" class="but_bar"><img src="./images/asigna.ico"/>&nbsp;Asignar Grupo</button>
+                    <button id="btn_eliminar_sw" class="but_bar prm_b"><img src="./images/eliminar.png"/>&nbsp;Eliminar</button>
+                    <button id="btn_asignar_grupo_sw" class="but_bar prm_s"><img src="./images/asigna.ico"/>&nbsp;Asignar Grupo</button>
                     <button class="but_bar" style="height: 32px !important; width: 240px;" id="mas_opc_busq"class="opc ui-icon-search">Ver busqueda avanzada</button>
                 </div>
                 <table cellpadding="0" cellspacing="0" border="1" class="display" id="dtsoftware">
@@ -286,10 +286,10 @@
             <br/>
             <div id="tabs-2">
                 <div class="ui-widget-header ui-corner-all but_bar_content">
-                    <button id="btn_agregar_gsw" class="but_bar"><img src="./images/agregar.png"/>&nbsp;Agregar</button>
-                    <button id="btn_modificar_gsw" class="but_bar"><img src="./images/modificar.png"/>&nbsp;Modificar</button>
+                    <button id="btn_agregar_gsw" class="but_bar prm_a"><img src="./images/agregar.png"/>&nbsp;Agregar</button>
+                    <button id="btn_modificar_gsw" class="but_bar prm_c"><img src="./images/modificar.png"/>&nbsp;Modificar</button>
                     <button id="btn_actualizar_gsw" class="but_bar"><img src="./images/actualizar.png"/>&nbsp;Actualizar</button>
-                    <button id="btn_eliminar_gsw" class="but_bar"><img src="./images/eliminar.png"/>&nbsp;Eliminar</button>
+                    <button id="btn_eliminar_gsw" class="but_bar prm_b"><img src="./images/eliminar.png"/>&nbsp;Eliminar</button>
                 </div>
                 <table cellpadding="0" cellspacing="0" border="1" class="display" id="dtgrupossoftware" width="100%">
                     <thead>
@@ -317,10 +317,10 @@
             </div>
             <div id="tabs-3">
                 <div class="ui-widget-header ui-corner-all but_bar_content">
-                    <button id="btn_agregar_so" class="but_bar"><img src="./images/agregar.png"/>&nbsp;Agregar</button>
-                    <button id="btn_modificar_so" class="but_bar"><img src="./images/modificar.png"/>&nbsp;Modificar</button>
+                    <button id="btn_agregar_so" class="but_bar prm_a"><img src="./images/agregar.png"/>&nbsp;Agregar</button>
+                    <button id="btn_modificar_so" class="but_bar prm_c"><img src="./images/modificar.png"/>&nbsp;Modificar</button>
                     <button id="btn_actualizar_so" class="but_bar"><img src="./images/actualizar.png"/>&nbsp;Actualizar</button>
-                    <button id="btn_eliminar_so" class="but_bar"><img src="./images/eliminar.png"/>&nbsp;Eliminar</button>
+                    <button id="btn_eliminar_so" class="but_bar prm_b"><img src="./images/eliminar.png"/>&nbsp;Eliminar</button>
                 </div>
                 <table cellpadding="0" cellspacing="0" border="1" class="display" id="dtso" width="100%">
                     <thead>
@@ -405,7 +405,7 @@
                                 if(respuesta!=false){
                                     var a=[];
                                     $.each(respuesta, function(k,v){
-                                        a[k]=[v.idgru,v.gru,v.idsw,'<img src="images/desasigna.ico" class="opc" title="Desasignar Grupode software" alt="Desasignar Grupo" onclick="desasignar_grupo(\''+v.id+'\',\''+v.idsw+'\')"/>'
+                                        a[k]=[v.idgru,v.gru,v.idsw,'<img src="images/desasigna.ico" class="opc prm_b" title="Desasignar Grupode software" alt="Desasignar Grupo" onclick="desasignar_grupo(\''+v.id+'\',\''+v.idsw+'\')"/>'
                                         ];});
                                     dt_grupos_sw.fnAddData(a);
                
@@ -1221,4 +1221,4 @@
     #so_sw,#m_so_sw,#grupos_sw,#grupos_so{width: 300px !important;}
     #m_so_grupo,#so_grupo{width: 300px !important;}
 </style>
-<!-- clor de letra color: #2779AA; -->
+<?php echo '<style type="text/css">'.$permisos.'</style>'; ?>

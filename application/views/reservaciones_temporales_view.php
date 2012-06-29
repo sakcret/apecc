@@ -33,7 +33,7 @@
                         <td width="86">
                             <div id="hrhide">
                                 <label for="horas">N&uacute;mero de Horas*:</label>&nbsp;&nbsp;
-                                <input maxlength="2" name="horas" onkeypress="return IsNumber(event);" class="height_widget" id="horas" onkeyup="calc_campos($(this));" value="1" type="text"/>&nbsp;
+                                <input maxlength="2" name="horas" onkeypress="return IsNumber(event);" class="height_widget ui-widget-content" id="horas" onkeyup="calc_campos($(this));" value="1" type="text"/>&nbsp;
 
                             </div> 
                         </td>
@@ -282,10 +282,11 @@
 <script type="text/javascript">
     var cb_usuarios=$('#tipo_u');
     var costoxhora = '<?php echo $this->config->item('costoxhora'); ?>';
+    var sala_select=<?php echo $sala_actual_1; ?>;
     
     function sala_actual(idsala){
         sala_select=idsala;
-        selected_tab = $tabs.tabs('option', 'selected');
+        //selected_tab = $tabs.tabs('option', 'selected');
     }
     /*Funcion que calcula la hora de fin y el importes de la reservacion momentanea*/
     function calc_campos(horas){
@@ -338,7 +339,7 @@
     }
 </script>
 <script type="text/javascript">
-    var sala_select=<?php echo $sala_actual_1; ?>;
+    
     
     function libera_sala(sala){
         $("#dialog:ui-dialog").dialog( "destroy" );
@@ -402,6 +403,7 @@
     function asigna_equipo(ns,o,d){
         mostrar_hora($("#hora_inicio"));
         var edo=d.attr("edo");
+        //$("#importe").val(costoxhora);
         if(edo=='L'||edo=='O'||edo=='C'){         
             if(edo=='L'||edo=='C'){
                 cargatipousuario();
@@ -441,7 +443,6 @@
                             }
                             if(bValid){
                                 var datos =$('#form_reservacion').serialize()+'&numserie='+ns+'&id_sala='+sala_select;
-                                alert(datos);
                                 var urll='index.php/reservaciones_temporales/reservacion_momentanea';
                                 var respuesta = ajax_peticion_json(urll,datos);
                                 if (respuesta!=false){
@@ -524,6 +525,11 @@
     }//fin asigna_equipo
 
     $(function() {
+    //calcular campos al dar clic en lo botones del spiner
+        $('#hrhide .ui-spinner-down,#hrhide .ui-spinner-up').live('click',function(){
+            var va=$('#horas');
+            calc_campos(va);
+        });
         $("#usuario").combobox();
         window.setTimeout('actualiza_pag()',1000);
         $('#tipo_u').change( function(){ cargausuarios();} );
@@ -533,7 +539,7 @@
         $('.over tbody td').hover(
         function(){ $(this).addClass('ui-state-active');},
         function(){ $(this).removeClass('ui-state-active');}
-    );
+        );
         /** al clic en el boton no encuentro al usuario crea un dialogo con ayuda para localizar al 
          *usurio dando la opcion de abrir en una pestaña nueva con la gestion de usuarios de ser
          * necesari agregara un nuevo usuario o actualizara el estausde la cuenta a activoç
@@ -578,4 +584,5 @@
         font-size: 10px !important;
     }
     .total-eq{margin-right: 15px; font-weight: bolder; float: right !important;}
-</style><br>
+</style>
+<br>

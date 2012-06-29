@@ -402,3 +402,7 @@ function carga_datos_select(obj_name,urll,data,first_elem){
     $('#'+obj_name+'').selectmenu();
         
 }
+
+function cerrar_sesion(){
+    redirect_to('acceso/logout');
+}

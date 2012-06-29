@@ -6,9 +6,28 @@ if (!defined('BASEPATH'))
 class Software extends CI_Controller {
 
     public function index() {
+         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        $login = $this->session->userdata('login');
+        if (!$login) {
+            redirect('acceso/acceso_denegado');
+        }
+        $this->load->library('utl_apecc');
+        //obtener el arreglo con los permisos para el usuario del sistema
+        $ptemp = $this->utl_apecc->getPermisos($this->session->userdata('puedo'));
+        //si el usuario tiene permisos asignados entonces obtengo la clave de permisos para el controlador usuarios
+        //que servirá como indice del arreglo de permisos y asi obtenerlos solo para el controlador actual(usuarios)
+        $permisos = '';
+        $prm_array = $this->config->item('prm_permisos');
+        if ($ptemp != FALSE) {
+            $rec = $this->config->item('clvp_software');
+            (array_key_exists($rec, $ptemp)) ? $permisos = $this->utl_apecc->getCSS_prm($ptemp[$rec], $prm_array) : $permisos = $this->utl_apecc->getCSS_prm(FALSE, $prm_array);
+        } else {
+            $permisos = $this->utl_apecc->getCSS_prm(FALSE, $prm_array);
+        }
+        $contenido['permisos'] = $permisos;
+        
         //$this->load->model("software_model");
         $data['titulo_pag'] = "ADMINISTRACI&Oacute;N DE SOFTWARE - CCFEI";
-        $contenido = '';
         $data['contenido'] = $this->load->view('software_view', $contenido, true);
         $this->load->view('plantilla', $data);
     }
@@ -83,8 +102,8 @@ class Software extends CI_Controller {
                     $row[] = $aRow[$aColumns[$i]];
                 }
             }
-            $row[] = '<img src="images/modificar.png" class="opc" title="Modificar" alt="Modificar" onclick="modifica_gruposw(\'' . $id . '\')"/>
-                      <img src="images/eliminar.png" class="opc" title="Eliminar" alt="Eliminar" onclick="elimina_gruposw(\'' . $id . '\')"/>';
+            $row[] = '<img src="images/modificar.png" class="opc prm_c" title="Modificar" alt="Modificar" onclick="modifica_gruposw(\'' . $id . '\')"/>
+                      <img src="images/eliminar.png" class="opc prm_b" title="Eliminar" alt="Eliminar" onclick="elimina_gruposw(\'' . $id . '\')"/>';
             $output['aaData'][] = $row;
         }
         echo $_GET['callback'] . '(' . json_encode($output) . ');';
@@ -168,9 +187,9 @@ class Software extends CI_Controller {
                     }
                 }
             }
-            $row[] = '<img src="images/modificar.png" class="opc" title="Modificar" alt="Modificar" onclick="modifica_software(\'' . $id . '\',\'' . $color . '\',$(\'#c_' . $id . '\'))"/>
-                      <img src="images/eliminar.png" class="opc" title="Eliminar" alt="Eliminar" onclick="elimina_software(\'' . $id . '\')"/>
-                      <img src="images/asigna.ico" class="opc" title="Asignar un grupo de software" alt="Asignar grupo" onclick="asigna_grupo(\'' . $id . '\',\'' . $idso . '\',\'' . $nombresw . '\')"/>';
+            $row[] = '<img src="images/modificar.png" class="opc prm_c" title="Modificar" alt="Modificar" onclick="modifica_software(\'' . $id . '\',\'' . $color . '\',$(\'#c_' . $id . '\'))"/>
+                      <img src="images/eliminar.png" class="opc prm_b" title="Eliminar" alt="Eliminar" onclick="elimina_software(\'' . $id . '\')"/>
+                      <img src="images/asigna.ico" class="opc prm_s" title="Asignar un grupo de software" alt="Asignar grupo" onclick="asigna_grupo(\'' . $id . '\',\'' . $idso . '\',\'' . $nombresw . '\')"/>';
             $output['aaData'][] = $row;
         }
         echo $_GET['callback'] . '(' . json_encode($output) . ');';
@@ -246,14 +265,19 @@ class Software extends CI_Controller {
                     $row[] = $aRow[$aColumns[$i]];
                 }
             }
-            $row[] = '<img src="images/modificar.png" class="opc" title="Modificar" alt="Modificar" onclick="modifica_so(\'' . $id . '\')"/>
-                      <img src="images/eliminar.png" class="opc" title="Eliminar" alt="Eliminar" onclick="elimina_so(\'' . $id . '\')"/>';
+            $row[] = '<img src="images/modificar.png" class="opc prm_c" title="Modificar" alt="Modificar" onclick="modifica_so(\'' . $id . '\')"/>
+                      <img src="images/eliminar.png" class="opc prm_b" title="Eliminar" alt="Eliminar" onclick="elimina_so(\'' . $id . '\')"/>';
             $output['aaData'][] = $row;
         }
         echo $_GET['callback'] . '(' . json_encode($output) . ');';
     }
     
     function agregaSO() {
+         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        $login = $this->session->userdata('login');
+        if (!$login) {
+            redirect('acceso/acceso_denegado');
+        }
         $this->load->model('software_model');
         $so = $this->input->Post("nombre_so");
         $sepudo = $this->software_model->agrega_so($so);
@@ -263,6 +287,11 @@ class Software extends CI_Controller {
     }
     
     function modificaSO() {
+         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        $login = $this->session->userdata('login');
+        if (!$login) {
+            redirect('acceso/acceso_denegado');
+        }
         $this->load->model('software_model');
         $so = $this->input->Post("m_nombre_so");
         $idso = $this->input->Post("idso");
@@ -273,6 +302,11 @@ class Software extends CI_Controller {
     }
     
     function asignaGrupoSW() {
+         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        $login = $this->session->userdata('login');
+        if (!$login) {
+            redirect('acceso/acceso_denegado');
+        }
         $this->load->model('software_model');
         $grupo = $this->input->Post("grupos_sw");
         $idsw = $this->input->Post("idsw");
@@ -283,6 +317,11 @@ class Software extends CI_Controller {
     }
     
     function desasignaGrupoSW() {
+         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        $login = $this->session->userdata('login');
+        if (!$login) {
+            redirect('acceso/acceso_denegado');
+        }
         $this->load->model('software_model');
         $idgru = $this->input->Post("idgru");
         $idsw = $this->input->Post("idsw");
@@ -293,6 +332,11 @@ class Software extends CI_Controller {
     }
 
     function eliminaSoftware() {
+         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        $login = $this->session->userdata('login');
+        if (!$login) {
+            redirect('acceso/acceso_denegado');
+        }
         $this->load->model("software_model");
         $id = $this->input->Post("id");
         $sepudo = $this->software_model->elimina_software($id);
@@ -302,6 +346,11 @@ class Software extends CI_Controller {
     }
     
     function eliminaSO() {
+         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        $login = $this->session->userdata('login');
+        if (!$login) {
+            redirect('acceso/acceso_denegado');
+        }
         $this->load->model("software_model");
         $id = $this->input->Post("id");
         $sepudo = $this->software_model->elimina_so($id);
@@ -311,6 +360,11 @@ class Software extends CI_Controller {
     }
     
     function eliminaGrupo() {
+         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        $login = $this->session->userdata('login');
+        if (!$login) {
+            redirect('acceso/acceso_denegado');
+        }
         $this->load->model("software_model");
         $id = $this->input->Post("id");
         $sepudo = $this->software_model->elimina_grupo($id);
@@ -320,6 +374,11 @@ class Software extends CI_Controller {
     }
 
     function agregaSoftware() {
+         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        $login = $this->session->userdata('login');
+        if (!$login) {
+            redirect('acceso/acceso_denegado');
+        }
         $this->load->model('software_model');
         $nombre = $this->input->Post("nombre_sw");
         $version = $this->input->Post("version_sw");
@@ -332,6 +391,11 @@ class Software extends CI_Controller {
     }
     
     function agregaGrupo() {
+         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        $login = $this->session->userdata('login');
+        if (!$login) {
+            redirect('acceso/acceso_denegado');
+        }
         $this->load->model('software_model');
         $nombre = $this->input->Post("nombre_grupo");
         $descripcion = $this->input->Post("descripcion_grupo");
@@ -343,6 +407,11 @@ class Software extends CI_Controller {
     }
     
     function modificaGrupo() {
+         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        $login = $this->session->userdata('login');
+        if (!$login) {
+            redirect('acceso/acceso_denegado');
+        }
         $this->load->model('software_model');
         $id = $this->input->Post("idgru");
         $nombre = $this->input->Post("m_nombre_grupo");
@@ -355,6 +424,11 @@ class Software extends CI_Controller {
     }
 
     function modificaSoftware() {
+         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        $login = $this->session->userdata('login');
+        if (!$login) {
+            redirect('acceso/acceso_denegado');
+        }
         $this->load->model('software_model');
         $id = $this->input->Post("id");
         $nombre = $this->input->Post("m_nombre_sw");

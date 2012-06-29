@@ -170,9 +170,9 @@
         <div class="ui-widget-header ui-corner-all but_bar_content">
             <div style="margin-top: 3px; margin-left: 6px;">
                 <button id="btn_actualiza"><img src="./images/actualizar.png"/>&nbsp;Actualizar</button>
-                <button id="btn_agregar"><img src="./images/agregar.png"/>&nbsp;Agregar</button>
-                <button id="btn_modificar"><img src="./images/modificar.png"/>&nbsp;Modificar</button>
-                <button id="btn_eliminar"><img src="./images/eliminar.png"/>&nbsp;Eliminar</button>
+                <button id="btn_agregar" class="prm_a"><img src="./images/agregar.png"/>&nbsp;Agregar</button>
+                <button id="btn_modificar" class="prm_c"><img src="./images/modificar.png"/>&nbsp;Modificar</button>
+                <button id="btn_eliminar" class="prm_b"><img src="./images/eliminar.png"/>&nbsp;Eliminar</button>
                 <button style="height: 30px !important; width: 250px;" id="mas_opc_busq"class="opc ui-icon-search">Ver busqueda avanzada</button>
                 <button style="height: 30px !important; width: 250px;" id="b_ver_campos"class="opc">Ver opciones de campos</button>
             </div>
@@ -702,18 +702,19 @@
             }
         } );
         
-    } );
+    });
 </script>
 <style type="text/css">    
     .ColVis {
         float: left;
         margin-bottom: 0
-    }
+    }    
     .dataTables_length {
         width: auto;
     }
     #tipo_u,#m_tipo_u{width: 400px;}
     .ui-selectmenu{width: 96% !important;}
 </style>
-
+<?php echo '<style type="text/css">'.$permisos.'</style>'; ?>
+<br>
 

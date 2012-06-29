@@ -1,13 +1,30 @@
 <?php
+
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 class Usuarios extends CI_Controller {
 
     public function index() {
+        //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        $login = $this->session->userdata('login');
+        if (!$login){
+            redirect('acceso/acceso_denegado');
+        }
+        $this->load->library('utl_apecc');
         $this->load->model("usuarios_model");
-        $data['titulo_pag'] = "GESTI&Oacute;N DE USUARIOS - CCFEI";
+        //obtener el arreglo con los permisos para el usuario del sistema
+        $ptemp=$this->utl_apecc->getPermisos($this->session->userdata('puedo'));
+        //si el usuario tiene permisos asignados entonces obtengo la clave de permisos para el controlador usuarios
+        //que servirá como indice del arreglo de permisos y asi obtenerlos solo para el controlador actual(usuarios)
+        if ($ptemp!=FALSE) {
+           $rec=  $this->config->item('clvp_usuarios'); 
+        }
+        $prm_array=$this->config->item('prm_permisos'); 
+        $contenido['permisos'] = $this->utl_apecc->getCSS_prm($ptemp[$rec], $prm_array) ;
+        
         $contenido['tipos_u_rows'] = $this->usuarios_model->getTipos();
+        $data['titulo_pag'] = "GESTI&Oacute;N DE USUARIOS - CCFEI";
         $data['contenido'] = $this->load->view('usuarios_view', $contenido, true);
         $this->load->view('plantilla', $data);
     }
@@ -72,7 +89,7 @@ class Usuarios extends CI_Controller {
         for ($x = 0; $x < $rResult->num_rows(); $x++) {
             $aRow = $rResult->row_array($x);
             $row = array();
-            $row['DT_RowId'] = 'row_'.$aRow[$sIndexColumn];
+            $row['DT_RowId'] = 'row_' . $aRow[$sIndexColumn];
             $row['DT_RowClass'] = 'gradeA';
             for ($i = 0; $i < count($aColumns); $i++) {
                 if ($aColumns[$i] == $sIndexColumn) {
@@ -82,17 +99,17 @@ class Usuarios extends CI_Controller {
                     if ($aColumns[$i] == "estatus") {
                         $st = $aRow[$aColumns[$i]];
                         if ($st == 'Actualizado') {
-                            $row[] = '<img src="images/status_actualizado.png" cambia_edo="0" id="' . $id . '" class="opc" title="Cambiar Estatus" alt="' . $st . '" onclick="actualiza_usuario($(\'#' . $id . '\'),\'' . $id . '\')"/>';
+                            $row[] = '<img src="images/status_actualizado.png" cambia_edo="0" id="' . $id . '" class="opc prm_c" title="Cambiar Estatus" alt="' . $st . '" onclick="actualiza_usuario($(\'#' . $id . '\'),\'' . $id . '\')"/>';
                         } else {
-                            $row[] = '<img src="images/status_no_actualizado.png" cambia_edo="1" id="' . $id . '" class="opc" title="Cambiar Estatus" alt="' . $st . '" onclick="actualiza_usuario($(\'#' . $id . '\'),\'' . $id . '\')"/>';
+                            $row[] = '<img src="images/status_no_actualizado.png" cambia_edo="1" id="' . $id . '" class="opc prm_c" title="Cambiar Estatus" alt="' . $st . '" onclick="actualiza_usuario($(\'#' . $id . '\'),\'' . $id . '\')"/>';
                         }
                     } else {
                         $row[] = $aRow[$aColumns[$i]];
                     }
                 }
             }
-            $row[] = '<img src="images/modificar.png" class="opc" title="Modificar" alt="Modificar" onclick="modifica_usuario(\'' . $id . '\')"/>
-                      <img src="images/eliminar.png" class="opc" title="Eliminar" alt="Eliminar" onclick="elimina_usuario(\'' . $id . '\')"/>';
+            $row[] = '<img src="images/modificar.png" class="opc prm_c" title="Modificar" alt="Modificar" onclick="modifica_usuario(\'' . $id . '\')"/>
+                      <img src="images/eliminar.png" class="opc prm_b" title="Eliminar" alt="Eliminar" onclick="elimina_usuario(\'' . $id . '\')"/>';
             $output['aaData'][] = $row;
         }
         echo $_GET['callback'] . '(' . json_encode($output) . ');';
@@ -116,6 +133,11 @@ class Usuarios extends CI_Controller {
     }
 
     function eliminaUsuario() {
+        //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        $login = $this->session->userdata('login');
+        if (!$login){
+            redirect('acceso/acceso_denegado');
+        }
         $this->load->model("usuarios_model");
         $login = $this->input->Post("id");
         $sepudo = $this->usuarios_model->elimina_usuario($login);
@@ -125,6 +147,11 @@ class Usuarios extends CI_Controller {
     }
 
     function agregaUsuario() {
+        //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        $login = $this->session->userdata('login');
+        if (!$login){
+            redirect('acceso/acceso_denegado');
+        }
         $this->load->model('usuarios_model');
         $login = $this->input->Post("login");
         $matricula = $this->input->Post("matricula");
@@ -137,16 +164,21 @@ class Usuarios extends CI_Controller {
         $ncredencial = $this->input->Post("ncredencial");
         $fechacreacion = date('Y-m-d');
         $fechaexpira = $this->config->item("fecha_periodo_fin");
-       if ($esmaestro=='si') {
-            $matricula=NULL;
+        if ($esmaestro == 'si') {
+            $matricula = NULL;
         }
-        $sepudo = $this->usuarios_model->agrega_usuario($login, $matricula, $nombre, $apaterno, $amaterno, $tipou, $ncredencial, $fechacreacion, $fechaexpira,$numpersonal,$esmaestro);
+        $sepudo = $this->usuarios_model->agrega_usuario($login, $matricula, $nombre, $apaterno, $amaterno, $tipou, $ncredencial, $fechacreacion, $fechaexpira, $numpersonal, $esmaestro);
         if ($sepudo)
             echo 'ok'; else
             echo "Se produjo un error al agregar el Usuario.";
     }
 
     function modificaUsuario() {
+        //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        $login = $this->session->userdata('login');
+        if (!$login){
+            redirect('acceso/acceso_denegado');
+        }
         $this->load->model('usuarios_model');
         $login = $this->input->Post("m_login");
         $matricula = $this->input->Post("m_matricula");
@@ -155,14 +187,13 @@ class Usuarios extends CI_Controller {
         $apaterno = $this->input->Post("m_apaterno");
         $amaterno = $this->input->Post("m_amaterno");
         $actualiza = $this->input->Post("estatus");
-        if ($esmaestro=='si') {
-            $matricula=NULL;
+        if ($esmaestro == 'si') {
+            $matricula = NULL;
         }
-        $sepudo = $this->usuarios_model->modifica_usuario($login, $matricula, $nombre, $apaterno, $amaterno, $actualiza,$esmaestro);
+        $sepudo = $this->usuarios_model->modifica_usuario($login, $matricula, $nombre, $apaterno, $amaterno, $actualiza, $esmaestro);
         if ($sepudo)
             echo 'ok'; else
             echo "Error al actualizar el estado del usuario con el login <b>$login</b>.";
-        
     }
 
     function actualizaStatusUsuario() {
@@ -175,7 +206,7 @@ class Usuarios extends CI_Controller {
             echo "Error al actualizar el estado del usuario con el login <b>$login</b>.";
     }
 
-    function dateToMysql($f) {
+    private function dateToMysql($f) {
         $fechaMySQL = substr($f, 6, 4) . '-' . substr($f, 3, 2) . '-' . substr($f, 0, 2);
         return $fechaMySQL;
     }
@@ -187,8 +218,8 @@ class Usuarios extends CI_Controller {
         $jsondata['max'] = $row['nmax'];
         echo json_encode($jsondata);
     }
-    
-    function getUsuariosAcademicos(){
+
+    function getUsuariosAcademicos() {
         $this->load->model('usuarios_model');
         $datos = $this->usuarios_model->getacademicos();
         $u = '';
@@ -200,3 +231,4 @@ class Usuarios extends CI_Controller {
 
 }
 
+?>

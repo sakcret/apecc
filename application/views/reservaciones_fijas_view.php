@@ -457,3 +457,4 @@ if (isset($val) && ($val != 0)) {
         window.attachEvent('onload', redips_init);
     }
 </script> 
+<?php echo '<style type="text/css">'.$permisos.'</style>'; ?>

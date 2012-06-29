@@ -51,6 +51,23 @@ class Reservaciones_salas_model extends CI_Model {
         return $result;
     }
 
+    function actualiza_estado($id, $st){
+        $datos = array(
+            'Estado' => $st
+        );
+        $this->db->trans_begin();
+        $this->db->where('IdReservSala', $id);
+        $this->db->update('reservacionessalas', $datos);
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            $result = FALSE;
+        } else {
+            $this->db->trans_commit();
+            $result = TRUE;
+        }
+        return $result;
+    }
+    
     function modifica_resevacion($idreserv, $sala, $actividad, $encargado, $hora_inicio, $hora_fin, $fecha_inicio, $fecha_fin) {
         $datos = array(
             'NombreActividad' => $actividad,

@@ -25,7 +25,7 @@
         <link rel="stylesheet" href="./css/extensiones_jqueryui.css">
         <link rel="stylesheet" href="./css/estilo_gral.css" type="text/css"/>
 
-        <script type="text/javascript" language="javascript" src="./js/jquery-1.7.2.js"></script>
+        <script type="text/javascript" language="javascript" src="./js/jquery-1.7.1.js"></script>
         <script type="text/javascript" language="javascript" src="./js/datatables/jquery.dataTables.js"></script>
         <!--sweet menu-->
         <script type="text/javascript" language="javascript" src="./js/menu_access/jquery.easing.js"></script>
@@ -34,9 +34,9 @@
         <!--jquery ui-->
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.effects.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.base.js"></script>
-        
+
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.mousewheel-3.0.4.js"></script>
-        
+
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.accordion.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.autocomplete.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery-ui/jquery.ui.button.js"></script>
@@ -58,8 +58,8 @@
         <!-- fin jquery ui-->
         <script type="text/javascript" language="javascript" src="./js/jquery.blockUI.js"></script>
         <script type="text/javascript" language="javascript" src="./js/js_gral.js"></script>
-        <script type="text/javascript" language="javascript" src="./js/nav_menu.js"></script>
         <script type="text/javascript" language="javascript" src="./js/utilerias.js"></script>
+        <script type="text/javascript" language="javascript" src="./js/nav_menu.js"></script>
         <?php
         if (isset($include) && ($include != '')) {
             echo $include . PHP_EOL;
@@ -79,7 +79,9 @@
                     }
                 }else{
                     //notificacion_tip("./images/msg/war_tip.png","Cache desactivado","El cache se encuentra desactivado.");
-                }}
+                }
+            }
+            
             function muestra_fecha(){
                 var  hoy = new Date(),
                 hora = fillZeroDateElement(hoy.getHours()),
@@ -113,26 +115,6 @@
                 
             }
         </script>
-        <script type="text/javascript">
-            $(function(){
-                $("#ulMenu").menubar({
-                    menuIcon: true,
-                    buttons: true,
-                    position: {
-                        within: $("#demo-frame").add(window).first()
-                    },
-                    select: function(event, ui) {
-                        $("<div/>").text("Selected: " + ui.item.text()).appendTo("#log");
-                    }
-                });
-                $(".no-icon").find(".ui-button-icon-secondary").removeClass("ui-icon ui-icon-triangle-1-s"); 
-                $('#refresh').hover(
-                function(){$(this).addClass('transparencia')},
-                function(){$(this).removeClass('transparencia')}
-            );
-                
-            });
-        </script>
     </head>
     <?php
     ob_flush();
@@ -146,14 +128,7 @@
     <script type="text/javascript"
       src="http://jqueryui.com/themeroller/themeswitchertool/">
     </script-->
-    <body onload="actualiza_cache_db();">
-        <ul id="acess_menu">
-            <li><a class="boxshadowround" href="#">Home</a></li>
-            <li><a class="boxshadowround" href="#">Actualizar</a></li>
-            <li><a class="boxshadowround" href=#"">Usuarios</a></li>
-            <li><a class="boxshadowround" href="#">Salir</a></li>
-            <li><a class="boxshadowround" href="#">Ayuda</a></li>
-        </ul>
+    <body onunload="cerrar_sesion()" onload="actualiza_cache_db();">
         <div class="container">
             <noscript>
                 <h1 class='error'>Para utilizar las funcionalidades completas de este sitio es necesario tener     JavaScript habilitado.</h1>    <h1>Aquí están las
@@ -205,7 +180,7 @@
                 </span>
             </ul>
             <div id="titulo_pag"class="twelvecol ui-widget-header header ui-corner-top boxshadow">
-                <label id="titulo_ventana" class="">
+                <label style="float: left;  margin-left: 50px;" id="titulo_ventana" class="">
                     <center class="label_titulo">
                         <?php
                         if (isset($titulo_pag) && ($titulo_pag != '')) {
@@ -214,7 +189,27 @@
                         ?>
                     </center>
                     <!--div style="font-size: 10 px; width: auto; float:right; margin-right: 50px;" id="switcher"></div-->
-                </label>                
+                </label>
+                <div style="float:right; width:30%; margin-left: 5px; margin-right: 5px; height: 80%; margin-top: 0.3%;" class="ui-state-focus ui-corner-all">
+                    <div class="manita" onclick="cerrar_sesion()" style="float: right; margin-right: 5px; ">
+                        <img title="Cerrar sesi&oacute;n" Style="height: 30px !important;" id="salir" onclick="cerrar_sesion()" class="manita" src="./images/salir.png"/>
+                    </div>
+                    <div style="float:left; margin-right: 10px;">
+                        <?php
+                        echo $this->session->userdata('img');
+                        $nom_u = $this->session->userdata('nombre');
+                        ?>
+                    </div>
+                    <div class="user_lb">    
+                        <?php
+                        if (($nom_u != '')) {
+                            echo $nom_u;
+                        } else {
+                            echo $this->session->userdata('login');
+                        }
+                        ?> 
+                    </div>
+                </div>
             </div>
             <div id="content" class="twelvecol last ui-widget-content boxshadow tooltip">
                 <div id="mensaje" class="hide"></div><!--Div donde se crearan los mensajes para cada accion de la pagina-->
@@ -227,31 +222,16 @@
 
             </div>
             <div id="footer" class="twelvecol last ui-widget-header ui-corner-bottom boxshadow" style="height:70px"></div>
+            <?php if($this->config->item('ver_menu_lt')){ ?>
+            <ul id="acess_menu">
+                <li><a class="boxshadowround" id="ml_hm" href="#">Home</a></li>
+                <li><a class="boxshadowround" onclick="window.location.reload()" >Actualizar</a></li>
+                <li><a class="boxshadowround" id="ml_us" href="#">Usuarios</a></li>
+                <li><a class="boxshadowround" id="ml_rm" href="#">Reservaciones</a></li>
+                <li><a class="boxshadowround" id="ml_ex" href="#">Salir</a></li>
+                <li><a class="boxshadowround" id="ml_hp" href="#">Ayuda</a></li>
+            </ul>
+            <?php }?>
         </div>
     </body>
 </html>
-<style type="text/css">
-    .sweetMenuAnchor{
-        border-top: 1px solid #ffffff;
-        border-right: 1px solid #ffffff;
-        border-bottom: 1px solid #ffffff;
-        border-top-right-radius: 4px;
-        -moz-border-radius-topright: 4px;
-        border-bottom-right-radius: 4px;
-        -moz-border-radius-bottomright: 4px;
-        color: #0071bb;
-        font-size: 24px;
-        font-weight: bold;
-        text-align: right;
-        text-transform: uppercase;
-        font-family: arial;
-        text-decoration: none;
-        background-color: #888888;
-        opacity: 0.6;
-    }
-
-    .sweetMenuAnchor span{
-        display: block;
-        padding-top: 10px;
-    }
-</style>

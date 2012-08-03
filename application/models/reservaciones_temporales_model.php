@@ -34,16 +34,22 @@ class Reservaciones_temporales_model extends CI_Model {
         $result = $this->db->query($sql);
         return $result;
     }
-    
-    function reserv_temp(){
-        $result = $this->db->get('reservacionesmomentaneas')->result_array();;
+
+    function reserv_temp() {
+        $hoy = date('Y-m-d');
+        $ahorita = date('H:i:s');
+        $this->db->where('Estado', 'A');
+        $this->db->where('Fecha', $hoy);
+        $this->db->where('TipoActividadAux', '-1');
+        $result = $this->db->get('reservacionesmomentaneas')->result_array();
         return $result;
     }
 
-    /*Crea una reservacion momentanea cambiando el estado del equipo a O=ocupado*/
-    function resevacion($clave_reservacion, $fecha, $horaInicio, $horaFin, $login, $numserie,$importe,$edo,$hrs,$edo_equipo,$diasemana,$sala) {
+    /* Crea una reservacion momentanea cambiando el estado del equipo a O=ocupado */
+
+    function resevacion($clave_reservacion, $fecha, $horaInicio, $horaFin, $login, $numserie, $importe, $edo, $hrs, $edo_equipo, $diasemana, $sala) {
         $insertreserv = array(
-            'idReservacionesMomentaneas'=>$clave_reservacion,
+            'idReservacionesMomentaneas' => $clave_reservacion,
             'Fecha' => $fecha,
             'HoraInicio' => $horaInicio,
             'HoraFin' => $horaFin,
@@ -54,7 +60,7 @@ class Reservaciones_temporales_model extends CI_Model {
             'Horas' => $hrs,
             'SalaAux' => $sala,
             'DiaSemana' => $diasemana
-            );
+        );
         $updatequipo = array(
             'Estado' => $edo_equipo
         );
@@ -71,10 +77,11 @@ class Reservaciones_temporales_model extends CI_Model {
         }
         return $result;
     }
-    
+
     /* Termina una reservacion momentanea actualizando el estado de la reservacop a T de terminada y 
-     * el estado del equipo lo cambia a L = libre*/
-    function termina_resevacion($idreserv,$numSerie) {
+     * el estado del equipo lo cambia a L = libre */
+
+    function termina_resevacion($idreserv, $numSerie) {
         $updatereserv = array(
             'Estado' => 'T'
         );
@@ -95,7 +102,7 @@ class Reservaciones_temporales_model extends CI_Model {
         }
         return $result;
     }
-    
+
     function getusuarios($tipo_u) {
         //$this->db->cache_on();
         $this->db->select("login,matricula,Concat(paterno,' ',materno,' ',nombre)as nombre", false);
@@ -108,7 +115,7 @@ class Reservaciones_temporales_model extends CI_Model {
         //$this->db->cache_off();
         return $result;
     }
-    
+
     function gettiposusuarios() {
         //$this->db->cache_on();
         $this->db->select("*");
@@ -117,16 +124,40 @@ class Reservaciones_temporales_model extends CI_Model {
         //$this->db->cache_off();
         return $result;
     }
-    
-    function liberasala() {
-        //$this->db->select("NumeroSerie");
-        //$this->db->order_by('descripcion', 'asc');
-        //$result = $this->db->get_where('reservacionesmomentaneas', array('id' => $id), $limit, $offset);
-        
-        //return $result;
+
+    function valid_exist_rm($login) {
+        $hoy = date('Y-m-d');
+        $ahorita = date('H:i:s');
+        $this->db->where('Estado', 'A');
+        $this->db->where('Login', $login);
+        $this->db->where('TipoActividadAux', '-1');
+        $this->db->where('Fecha', $hoy);
+        $this->db->where('HoraFin >', $ahorita);
+        $this->db->limit(1);
+        $result = $this->db->get('reservacionesmomentaneas');
+        return $result;
     }
-    
- 
+
+    function reubicaUsuario($idreserv, $equipo,$equipoant) {
+        $updatereserv = array(
+            'NumeroSerie' => $equipo
+        );
+        $this->db->trans_begin();
+        $this->db->where('NumeroSerie', $equipo);
+        $this->db->update('equipos', array('Estado' => 'O' ));
+        $this->db->where('NumeroSerie', $equipoant);
+        $this->db->update('equipos', array('Estado' => 'L' ));
+        $this->db->where('idReservacionesMomentaneas', $idreserv);
+        $this->db->update('reservacionesmomentaneas', $updatereserv);
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            $result = FALSE;
+        } else {
+            $this->db->trans_commit();
+            $result = TRUE;
+        }
+        return $result;
+    }
 
 }
 

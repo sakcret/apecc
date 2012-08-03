@@ -162,13 +162,12 @@ echo '</style>';
         <?php
         $s = $salas->result_array();
         $numreg = $salas->num_rows();
-        $porcentaje = (100 / $numreg) - 0.4;
+        $porcentaje = (100 / $numreg) - 1;
         echo ' <div id="tabs">' . PHP_EOL . '<ul>' . PHP_EOL;
         for ($is = 0; $is < $numreg; $is++) {
             echo '<li style="width:' . $porcentaje . '%"><a style="width:98%;" onclick="sala_actual(' . $s[$is]["idSala"] . ')" href="#tabs-' . $s[$is]["idSala"] . '">&nbsp;&nbsp;Sala ' . $s[$is]["Sala"] . '&nbsp;&nbsp;&nbsp;</a></li>' . PHP_EOL;
         }
         echo '</ul>' . PHP_EOL;
-
         for ($i = 0; $i < $numreg; $i++) {
             $tmp_sal = $s[$i]["idSala"];
             if ($i == 0) {
@@ -189,10 +188,10 @@ echo '</style>';
                                         </td>
                                         <td class="mark blank ui-state-default">Lunes</td>
                                         <td class="mark blank ui-state-default">Martes</td>
-                                        <td class="mark blank ui-state-default">Miercoles</td>
+                                        <td class="mark blank ui-state-default">Mi&eacute;rcoles</td>
                                         <td class="mark blank ui-state-default">Jueves</td>
                                         <td class="mark blank ui-state-default">Viernes</td>
-                                        <td class="mark blank ui-state-default">Sabado</td>
+                                        <td class="mark blank ui-state-default">S&aacute;bado</td>
                                     </tr>
                                     <?php
                                     foreach ($datos_salas[$s[$i]["idSala"]] as $r) {

@@ -71,7 +71,8 @@ class Actualiza_estado_db_model extends CI_Model {
         }
     }
 
-    function resevacion($clave_reservacion, $fecha, $horaInicio, $horaFin, $login, $numserie, $importe, $edo, $hrs, $edo_equipo, $diasemana, $salaaux, $tipoActAux,$act) {
+    function resevacion($clave_reservacion, $fecha, $horaInicio, $horaFin, $login, $numserie, $importe, $edo, $hrs, $edo_equipo, $diasemana, $salaaux, $tipoActAux,$act){
+
         $insertreserv = array(
             'idReservacionesMomentaneas' => $clave_reservacion,
             'Fecha' => $fecha,
@@ -138,7 +139,7 @@ where Estado=\'A\' '.$wheredate);
     }
     
     function getReservacionesActivas($horafin) {
-        return $this->db->query('select * from reservacionesmomentaneas where Estado=\'A\' and TipoActividadAux=-1 and horaFin=\''.$horafin.'\'');
+        return $this->db->query('select * from reservacionesmomentaneas where Estado=\'A\' and TipoActividadAux=-1 and horaFin <= \''.$horafin.'\'');
     }
     
 

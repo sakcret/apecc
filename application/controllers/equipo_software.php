@@ -3,15 +3,15 @@
 class Equipo_software extends CI_Controller {
 
     public function index() {
-         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
         $login = $this->session->userdata('login');
         $permisos_us = $this->session->userdata('puedo');
         if (!$login) {
             redirect('acceso/acceso_denegado');
         }
         //si el usuario no tiene ningún permiso asignado
-        if($permisos_us==''){
-             redirect('acceso/acceso_home/inicio');
+        if ($permisos_us == '') {
+            redirect('acceso/acceso_home/inicio');
         }
         $this->load->library('utl_apecc');
         //obtener el arreglo con los permisos para el usuario del sistema
@@ -24,11 +24,11 @@ class Equipo_software extends CI_Controller {
             //si en el arreglo de permisos esta la clave de usuarios
             if (array_key_exists($rec, $ptemp)) {
                 $permisos = $this->utl_apecc->getCSS_prm($ptemp[$rec], $prm_array);
-            }else{
+            } else {
                 redirect('acceso/acceso_home/inicio');
             }
         } else {
-            $permisos = $this->utl_apecc->getCSS_prm(false, $prm_array);//si es falso no se encontraron permisos por lo tanto se ponen los atributos para solo lectura
+            $permisos = $this->utl_apecc->getCSS_prm(false, $prm_array); //si es falso no se encontraron permisos por lo tanto se ponen los atributos para solo lectura
         }
         $contenido['permisos'] = $permisos;
         $this->load->model('reservaciones_temporales_model');
@@ -52,6 +52,7 @@ class Equipo_software extends CI_Controller {
             $jsondata[$i]['sw'] = $row->nombre;
             $jsondata[$i]['de'] = $row->descripcion;
             $jsondata[$i]['so'] = $row->so;
+            $jsondata[$i]['idso'] = $row->idso;
             $i++;
         }
         echo json_encode($jsondata);
@@ -122,8 +123,7 @@ class Equipo_software extends CI_Controller {
         $so = $this->input->post('so');
         $this->load->model('equipo_software_model');
         $result = $this->equipo_software_model->getGruposSo($so);
-        echo $this->db->last_query();
-        $s='';
+        $s = '';
         if ($result->num_rows() != 0) {
             foreach ($result->result() as $r) {
                 $s .= "<option value='" . $r->idGrupo . "'> " . $r->nombre . "</option>";
@@ -131,6 +131,20 @@ class Equipo_software extends CI_Controller {
             echo $s;
         } else {
             echo '';
+        }
+    }
+
+    function getSwGru($gru) {
+        $this->load->model('equipo_software_model');
+        $ids = $this->equipo_software_model->getSWGrupos($gru);
+        $sws=array();
+        if (($ids !== false) && $ids->num_rows() > 0) {
+            foreach ($ids->result() as $v) {
+                array_push($sws,$v->idSoftware);
+            }
+            echo json_encode($sws);
+        }else {
+            echo false;
         }
     }
 

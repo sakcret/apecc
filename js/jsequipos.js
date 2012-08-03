@@ -23,24 +23,48 @@ function sistemas_operativos(ns){
             $('#so_equipo').html('<b>No se han encontrado Sistemas Operativos.</b><br>Agrega sistemas operativos en el apartado de software');
         }
     }                      
-}  
+}
+
+function marcaSW(sws){
+    //$("#m_f_permisos input[type=checkbox]").each(function() { 
+      //  this.checked = false; });
+      try{
+    if(sws!=false&&sws.length!=null){
+        $.each(sws, function(k,v){
+            try{
+                $('#chk_'+v).get(0).checked=true;  
+            }catch(e){}
+        });
+    }
+    }catch(e){
+       
+    }
+}
 
 function software_equipo(ns){
     var urll='index.php/equipo_software/getSoftware/'+ns;
     var html='<div id="accordion" class="boxshadowround ui-corner-all">';
+    var js='<script>$(function() {';
     var respuesta = ajax_peticion_json(urll,'');
     var sw=sw_equipo(ns),ch='';
     var i=0,sosig='';
-   
     var b=true;
     if (respuesta!=false&&respuesta!=null){
         so=respuesta[0].so;
+        idso=respuesta[0].so;
         for (i=0;i<=respuesta.length;i++){
             try{
                 so=respuesta[i].so;
+                var grupos='';
                 if(b==true){
-                    html+='<h3><a href="#">'+so+'</a></h3><div>';
-                }
+                    idso=respuesta[i].idso;
+                    id_select='igrupos_so'+idso;
+                    grupos=ajax_peticion('index.php/equipo_software/grupos_so','so='+idso);
+                    // html+='<div id="grupos"><select></select></div>';
+                    html+='<h3><a href="#">'+so+'</a></h3><div><div>Grupos de software:&nbsp;<select id="'+id_select+'">'+grupos+'</select></div>';
+                    js+='$("#'+id_select+'").live("change", function(){var r= ajax_peticion_json(\'index.php/equipo_software/getSwGru/\'+$(this).val()); marcaSW(r); });  ';
+         //js='';    
+          }
                 sosig=respuesta[i+1].so;
                 if(i==respuesta.length){
                     sosig='dsa$%';
@@ -64,7 +88,9 @@ function software_equipo(ns){
                 
         }
         html+='</div>';
-        $('#sw_equipo').html(html); 
+        js+='});</script>';
+        html+=js;
+          $('#sw_equipo').html(html); 
     }else{
         
     }

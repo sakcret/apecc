@@ -7,11 +7,11 @@
         <link rel="shortcut icon" href="./images/favicon.ico">
         <link rel="stylesheet" href="./css/cssgrid1140/1140.css" type="text/css"/>
         <link rel="stylesheet" href="./css/cssgrid1140/styles.css" type="text/css"/>
+        <script type="text/javascript" language="javascript" src="./js/jquery-1.7.2.js"></script>
         <script type="text/javascript" language="javascript" src="./js/cssgrid1140/css3-mediaqueries.js"></script>
         <link rel="stylesheet" href="./css/jquery-ui/jquery-ui-1.8.20.custom.css">
         <link rel="stylesheet" href="./css/jquery-ui/jquery.ui.base.css">
         <link rel="stylesheet" href="./css/extensiones_jqueryui.css">
-        <script type="text/javascript" language="javascript" src="./js/jquery-1.7.1.min.js"></script>
         <script type="text/javascript" language="javascript" src="./js/jquery.blockUI.js"></script>
         <script type="text/javascript">
             var cuentaInicial = "5";

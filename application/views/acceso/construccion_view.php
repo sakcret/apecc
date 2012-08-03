@@ -5,6 +5,7 @@
         <meta name="author" content="CGT">
         <meta http-equiv="content-type" CONTENT="text/html; charset=utf-8">
         <link rel="shortcut icon" href="./images/favicon.ico">
+         <script type="text/javascript" language="javascript" src="./js/jquery-1.7.2.js"></script>
         <link rel="stylesheet" href="./css/cssgrid1140/1140.css" type="text/css"/>
         <link rel="stylesheet" href="./css/cssgrid1140/styles.css" type="text/css"/>
         <link rel="stylesheet" href="./css/jquery-ui/jquery-ui-1.8.20.custom.css">

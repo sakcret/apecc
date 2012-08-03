@@ -1,4 +1,3 @@
-
 <div class="row hide">
     <div id="dialog_asignacion_momentanea" onLoad="window.setTimeout('mostrar_hora()',1000);" title="Reservaciones Momentaneas" >
         <div class="tips_validacion" style="height: auto; width: 100% !important;">
@@ -150,7 +149,7 @@
 
         $s = $salas->result_array();
         $numreg = $salas->num_rows();
-        $porcentaje = (100 / $numreg) - 0.4;
+        $porcentaje = (100 / $numreg) - 1;
         echo ' <div id="tabs">' . PHP_EOL . '<ul>' . PHP_EOL;
         for ($is = 0; $is < $numreg; $is++) {
             echo '<li style="width:' . $porcentaje . '%"><a style=" width: 90%" onclick="sala_actual(' . $s[$is]["idSala"] . ')" href="#tabs-' . $s[$is]["idSala"] . '">&nbsp;&nbsp;Sala ' . $s[$is]["Sala"] . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></li>' . PHP_EOL;
@@ -312,7 +311,6 @@
         minutos = fillZeroDateElement(hoy.getMinutes()),
         segundos = fillZeroDateElement(hoy.getSeconds());
         $("#hora_inicio").val(" "  + hora + ":" + minutos + ":" + segundos); 
-        $("#drm_horafin").val(" "  + hora + ":" + minutos + ":" + segundos); 
         window.setTimeout("mostrar_hora()",1000); 
     }
     
@@ -323,17 +321,17 @@
         segundos = fillZeroDateElement(hoy.getSeconds());
         var hora_cmp=hora + ":" + minutos+':'+segundos; 
         if(hora_cmp=='05:59:00'||hora_cmp=='06:59:00'||hora_cmp=='07:59:00'||hora_cmp=='08:59:00'||hora_cmp=='09:59:00'||hora_cmp=='10:59:00'
-         ||hora_cmp=='11:59:00'||hora_cmp=='12:59:00'||hora_cmp=='13:59:00'||hora_cmp=='14:59:00'||hora_cmp=='15:59:00'
-         ||hora_cmp=='16:59:00'||hora_cmp=='17:59:00'||hora_cmp=='18:00:00'||hora_cmp=='19:59:00'||hora_cmp=='20:59:00'
-         ||hora_cmp=='21:59:00'){
+            ||hora_cmp=='11:59:00'||hora_cmp=='12:59:00'||hora_cmp=='13:59:00'||hora_cmp=='14:59:00'||hora_cmp=='15:59:00'
+            ||hora_cmp=='16:59:00'||hora_cmp=='17:59:00'||hora_cmp=='18:00:00'||hora_cmp=='19:59:00'||hora_cmp=='20:59:00'
+            ||hora_cmp=='21:59:00'){
             notificacion_tip("./images/msg/info.png","Actualizaci&oacute;n dep&aacute;gina","La p&aacute;gina se recargar&aacute; dentro de un minuto.");                     
         }else{}
         
         if(hora_cmp=='06:00:00'||hora_cmp=='07:00:00'||hora_cmp=='08:00:00'||hora_cmp=='09:00:00'||hora_cmp=='10:00:00'
-         ||hora_cmp=='11:00:00'||hora_cmp=='12:00:00'||hora_cmp=='13:00:00'||hora_cmp=='14:00:00'||hora_cmp=='15:00:00'
-         ||hora_cmp=='16:00:00'||hora_cmp=='17:00:00'||hora_cmp=='18:00:00'||hora_cmp=='19:00:00'||hora_cmp=='20:00:00'
-         ||hora_cmp=='21:00:00'||hora_cmp=='22:00:00'){
-            redirect_to('reservaciones_temporales');
+            ||hora_cmp=='11:00:00'||hora_cmp=='12:00:00'||hora_cmp=='13:00:00'||hora_cmp=='14:00:00'||hora_cmp=='15:00:00'
+            ||hora_cmp=='16:00:00'||hora_cmp=='17:00:00'||hora_cmp=='18:00:00'||hora_cmp=='19:00:00'||hora_cmp=='20:00:00'
+            ||hora_cmp=='21:00:00'||hora_cmp=='22:00:00'){
+            redirect_to('reservaciones_temporales?');//agrego ? para evitar que la pagina se cachee
         }else{}
         window.setTimeout("actualiza_pag()",1000);
     }
@@ -430,7 +428,7 @@
                 $( "#dialog_asignacion_momentanea").dialog({
                     autoOpen: false,
                     width: 500,
-                    modal: true,
+                    modal:false,
                     buttons: {
                         "Aceptar": function() {
                             var bValid = true;
@@ -441,27 +439,83 @@
                                 var msg=mensaje_tips("./images/msg/warning.png","Debe seleccionar un usuario.");
                                 updateTips(msg,tips );
                             }
+                            var puedereserv={};
                             if(bValid){
-                                var datos =$('#form_reservacion').serialize()+'&numserie='+ns+'&id_sala='+sala_select;
-                                var urll='index.php/reservaciones_temporales/reservacion_momentanea';
-                                var respuesta = ajax_peticion_json(urll,datos);
-                                if (respuesta!=false){
-                                    notificacion_tip("./images/msg/ok.png","Reservaciones momentaneas","La reservaci&oacute;n se registr&oacute; satisfactoriamente.");
-                                    o.attr('src','./images/pc_edos/pc_O.png');
-                                    d.attr("idreserv",respuesta.idreser);
-                                    d.attr("horai",respuesta.horai);
-                                    d.attr("horaf",respuesta.horaf);
-                                    d.attr("usuario",respuesta.usuario);
-                                    d.attr("edo","O");
-                                    d.attr("estado_reserv",respuesta.estado_reserv);
-                                    d.attr("imp",respuesta.importe);
-                                    d.attr("hrs",respuesta.horas);
+                                puedereserv = ajax_peticion_json('index.php/reservaciones_temporales/valida_existencia_rm/'+usuario.val(),'');
+                                if(puedereserv=='puede'){
+                                    var datos =$('#form_reservacion').serialize()+'&numserie='+ns+'&id_sala='+sala_select;
+                                    var urll='index.php/reservaciones_temporales/reservacion_momentanea';
+                                    var respuesta = ajax_peticion_json(urll,datos);
+                                    if (respuesta!=false){
+                                        notificacion_tip("./images/msg/ok.png","Reservaciones momentaneas","La reservaci&oacute;n se registr&oacute; satisfactoriamente.");
+                                        o.attr('src','./images/pc_edos/pc_O.png');
+                                        d.attr("idreserv",respuesta.idreser);
+                                        d.attr("horai",respuesta.horai);
+                                        d.attr("horaf",respuesta.horaf);
+                                        d.attr("usuario",respuesta.usuario);
+                                        d.attr("edo","O");
+                                        d.attr("estado_reserv",respuesta.estado_reserv);
+                                        d.attr("imp",respuesta.importe);
+                                        d.attr("hrs",respuesta.horas);
+                                    }else{
+                                        mensaje($( "#mensaje" ),'Error al resgistrar reservaci&oacute;n! ','./images/msg/error.png',respuesta,'<span class="ui-icon ui-icon-lightbulb"></span>Actualiza la p&aacute;gina e intenta de nuevo. Si el <b>Error</b> persiste consulta al administrador.',400,true);
+                                    } 
+                                    $( this ).dialog( "close" );
                                 }else{
-                                    mensaje($( "#mensaje" ),'Error al resgistrar reservaci&oacute;n! ','./images/msg/error.png',respuesta,'<span class="ui-icon ui-icon-lightbulb"></span>Actualiza la p&aacute;gina e intenta de nuevo. Si el <b>Error</b> persiste consulta al administrador.',400,true);
-                                } 
-                                $( this ).dialog( "close" );
+                                    var html='<div style="padding:10px;">'+
+                                        '<h1>Ya existe una reservacion activa para el usuario con el login:'+usuario.val()+' </h1><hr class="boxshadowround">'+
+                                        'Equipo: '+puedereserv.eq+'<br>Hora de Inicio: '+puedereserv.hi+'<br>Hora de Fin: '+puedereserv.hf+'<br>Horas: '+puedereserv.hr+'<br>Importe: '+puedereserv.im+
+                                        '<hr class="boxshadowround"><h1>¿Desea rehubicar al usuario ?</h1><br>En caso de cancelar se cerrar&aacute; esta ventana.'+
+                                        '</div>';
+                                    $( "#dialog-aux" ).html(html);
+                                    //si ya tiene una reservacion activa entonces pregunto si desea cambiar de equipo
+                                    $( "#dialog-aux" ).attr('title','Reubicar Usuario');
+                                    //$( "#ui-dialog-title-dialog-aux" ).text('Reubicar Usuario');
+                                    $( "#dialog-aux" ).dialog({
+                                        resizable: false,
+                                        width:300,
+                                        modal: true,
+                                        buttons: {
+                                            "Reubicar al usuario": function() {
+                                                //modifico domm para el equipo anterior
+                                                $('#'+puedereserv.eq+'_img').attr('src','./images/pc_edos/pc_L.png');
+                                                $('#'+puedereserv.eq).attr("idreserv",'');
+                                                $('#'+puedereserv.eq).attr("horai",'');
+                                                $('#'+puedereserv.eq).attr("horaf",'');
+                                                $('#'+puedereserv.eq).attr("usuario",'');
+                                                $('#'+puedereserv.eq).attr("edo","L");
+                                                $('#'+puedereserv.eq).attr("estado_reserv",'');
+                                                $('#'+puedereserv.eq).attr("imp",'');
+                                                $('#'+puedereserv.eq).attr("hrs",'');
+                                                //pasar datos a la nueva hubicacion
+                                                o.attr('src','./images/pc_edos/pc_O.png');
+                                                d.attr("idreserv",puedereserv.id);
+                                                d.attr("horai",puedereserv.hi);
+                                                d.attr("horaf",puedereserv.hf);
+                                                d.attr("usuario",usuario.val());
+                                                d.attr("edo","O");
+                                                d.attr("estado_reserv",'A');
+                                                d.attr("imp",puedereserv.im);
+                                                d.attr("hrs",puedereserv.hr);
+                                                var respuesta = ajax_peticion_json('index.php/reservaciones_temporales/reubicarUsuario','id='+puedereserv.id+'&eq='+ns+'&eqant='+puedereserv.eq);
+                                                if (respuesta=='ok'){
+                                                    notificacion_tip("./images/msg/ok.png","Reubicar Usuario","Serealizo la reubicaci&oacute;n satisfactoriamente.");
+                                                }else{
+                                                    
+                                                }
+                                                $( this ).dialog( "close" );
+                                            },
+                                            Cancelar: function() {
+                                                $( this ).dialog( "close" );
+                                            }
+                                        },
+                                        close: function() {
+                                            $( "#dialog_asignacion_momentanea").dialog( "close" );
+                                        }
+                                        
+                                    });
+                                }
                             }
-
                         },
                         "Cancelar": function() {
                             $( this ).dialog( "close" );
@@ -490,7 +544,7 @@
                     $( "#dialog_termina_actualiza_reserv").dialog({
                         autoOpen: false,
                         width: 550,
-                        modal: true,
+                        modal: false,
                         buttons: {
                             "Terminar Reservación": function() {
                                 var datos='idreserv='+d.attr('idreserv')+'&equipo='+d.attr('id');
@@ -525,7 +579,7 @@
     }//fin asigna_equipo
 
     $(function() {
-    //calcular campos al dar clic en lo botones del spiner
+        //calcular campos al dar clic en lo botones del spiner
         $('#hrhide .ui-spinner-down,#hrhide .ui-spinner-up').live('click',function(){
             var va=$('#horas');
             calc_campos(va);
@@ -539,7 +593,7 @@
         $('.over tbody td').hover(
         function(){ $(this).addClass('ui-state-active');},
         function(){ $(this).removeClass('ui-state-active');}
-        );
+    );
         /** al clic en el boton no encuentro al usuario crea un dialogo con ayuda para localizar al 
          *usurio dando la opcion de abrir en una pestaña nueva con la gestion de usuarios de ser
          * necesari agregara un nuevo usuario o actualizara el estausde la cuenta a activoç

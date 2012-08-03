@@ -6,15 +6,15 @@ if (!defined('BASEPATH'))
 class Reservaciones_temporales extends CI_Controller {
 
     public function index() {
-         //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
+        //si se a auntenticado el usuario del sistema podrá entrar sino sera redireccionado para que ingrese
         $login = $this->session->userdata('login');
         $permisos_us = $this->session->userdata('puedo');
         if (!$login) {
             redirect('acceso/acceso_denegado');
         }
         //si el usuario no tiene ningún permiso asignado
-        if($permisos_us==''){
-             redirect('acceso/acceso_home/inicio');
+        if ($permisos_us == '') {
+            redirect('acceso/acceso_home/inicio');
         }
         $this->load->library('utl_apecc');
         //obtener el arreglo con los permisos para el usuario del sistema
@@ -27,11 +27,11 @@ class Reservaciones_temporales extends CI_Controller {
             //si en el arreglo de permisos esta la clave de usuarios
             if (array_key_exists($rec, $ptemp)) {
                 $permisos = $this->utl_apecc->getCSS_prm($ptemp[$rec], $prm_array);
-            }else{
+            } else {
                 redirect('acceso/acceso_home/inicio');
             }
         } else {
-            $permisos = $this->utl_apecc->getCSS_prm(false, $prm_array);//si es falso no se encontraron permisos por lo tanto se ponen los atributos para solo lectura
+            $permisos = $this->utl_apecc->getCSS_prm(false, $prm_array); //si es falso no se encontraron permisos por lo tanto se ponen los atributos para solo lectura
         }
         $contenido['permisos'] = $permisos;
         $this->load->model('reservaciones_temporales_model');
@@ -64,20 +64,20 @@ class Reservaciones_temporales extends CI_Controller {
         /*         * crear la clave de la reservacion ++esta consta de los primeros 6 caracteres del numero de serie del equipo
          * seguido de los primero 4 caracteres del usuario, seguido de la fecha de la reservacion con el formato ymdHis
          */
-        $clave_reservacion = $numserie. substr($usuario, 0, 4) . date("ymdHis");
+        $clave_reservacion = $numserie . substr($usuario, 0, 4) . date("ymdHis");
 
         $alrato = $ahorita->add(new DateInterval('PT' . $horas . 'H')); // a la hora actual le sumo las horas que se especificaron en la reservacion
-        $horafin = $alrato->format("H").':00:00';
-        /*Si se marco la opcion no especificar hora fin la reservacion sera abierta para esto el estado de la reservacion
-         *  se cambia a I, el importe la hora y hora de inicio se establecen en 0*/
+        $horafin = $alrato->format("H") . ':00:00';
+        /* Si se marco la opcion no especificar hora fin la reservacion sera abierta para esto el estado de la reservacion
+         *  se cambia a I, el importe la hora y hora de inicio se establecen en 0 */
         if (isset($reserv_no_especifica) && $reserv_no_especifica == "reservacion_abierta") {
             $edo = 'I';
             $horas = 0;
             $horafin = 0;
-            $importe=0;
+            $importe = 0;
         }
-        
-        $sepudo = $this->reservaciones_temporales_model->resevacion($clave_reservacion, $hoy, $horainicio, $horafin, $usuario, $numserie, $importe, $edo, $horas, $edo_equipo,$diasemana,$sala);
+
+        $sepudo = $this->reservaciones_temporales_model->resevacion($clave_reservacion, $hoy, $horainicio, $horafin, $usuario, $numserie, $importe, $edo, $horas, $edo_equipo, $diasemana, $sala);
 
         $jsondata['idreser'] = $clave_reservacion;
         $jsondata['horai'] = $horainicio;
@@ -97,7 +97,10 @@ class Reservaciones_temporales extends CI_Controller {
         $idreserv = $this->input->post('idereserv');
         $numSerie = $this->input->post('equipo');
         $this->load->model('reservaciones_temporales_model');
+        if($numSerie!=''){
         $sepudo = $this->reservaciones_temporales_model->termina_resevacion($idreserv, $numSerie);
+        
+        }
         if ($sepudo) {
             echo 'ok';
         } else {
@@ -131,10 +134,37 @@ class Reservaciones_temporales extends CI_Controller {
         echo $u;
     }
 
-    function liberaSala() {
-        $sala = $this->input->post('sala');
-
-        echo "ok";
+    function valida_existencia_rm($login) {
+        $this->load->model('reservaciones_temporales_model');
+        $result = $this->reservaciones_temporales_model->valid_exist_rm($login);
+        //echo $this->db->last_query();
+        if ($result->num_rows() == 0) {
+            echo json_encode('puede');
+        } else {
+            $d = $result->row();
+            $jsondata['id'] = $d->idReservacionesMomentaneas;
+            $jsondata['eq'] = $d->NumeroSerie;
+            $jsondata['hi'] = $d->HoraInicio;
+            $jsondata['hf'] = $d->HoraFin;
+            $jsondata['im'] = $d->Importe;
+            $jsondata['hr'] = $d->Horas;
+            echo json_encode($jsondata);
+        }
     }
+
+    function reubicarUsuario() {
+        $idreserv = $this->input->post('id');
+        $equipo = $this->input->post('eq');
+        $equipoant = $this->input->post('eqant');
+        $this->load->model('reservaciones_temporales_model');
+        $sepudo = $this->reservaciones_temporales_model->reubicaUsuario($idreserv,$equipo,$equipoant);
+        if ($sepudo) {
+            echo 'ok';
+        } else {
+            echo 'Error al reubicar al usuario.';
+        }
+    }
+
 }
+
 ?>

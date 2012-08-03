@@ -7,6 +7,7 @@
 
     </head>
     <body onload="window.setTimeout('actualiza_pag()',1000);">
+        Servicio Actualiza db Iniciado...<br>
         <div id="msg">
 
         </div>
@@ -15,7 +16,7 @@
 <script type="text/javascript">
     function ajax(datos){
         $.ajax({
-            url:"actualizar_bd",
+            url:"index.php/actualiza_db/actualizar",
             data: datos,
             type:"POST",
             error: function(a, b) { 
@@ -35,7 +36,7 @@
         var dia_semana = hoy.getDay();
         var dia=hoy.getDate()
         //document.write("Hoy es "+dia+'<br>es el d='+dia_semana);
-        document.write(hora_cmp+'<br>');
+        //document.write(hora_cmp+'<br>');
         var resp='';            
         switch (hora_cmp) {
             case '06:00:00' :

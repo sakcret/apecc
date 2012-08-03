@@ -180,18 +180,19 @@
                 sistemas_operativos(ns);
                 $(function() {
                     $('.check').checkbox();
-                    $( "#accordion" ).accordion({icons: icons,heightStyle: "content"});
+                    $( "#accordion" ).accordion({icons: icons,autoHeight: false,
+            navigation: true});
                 });
                 software_equipo(ns);
                 $(function() {
                     $('.check').checkbox();
-                    $( "#accordion" ).accordion({icons: icons,heightStyle: "content"});
+                    $( "#accordion" ).accordion({icons: icons,autoHeight: false,
+            navigation: true});
                 });
             }catch(e){}
             $("#dialog:ui-dialog").dialog( "destroy" );
             $("#dialog_asigna_sw").dialog("open");
         }else{
-            
             mensaje($( "#mensaje" ),'Asignaci&oacute;n  de Software','./images/msg/warning.png','<b>No se puede asignar software al equipo</b> <hr class="boxshadowround"/>','No se puede asignar software al equipo <b>'+ns+'</b>, ya que se encuentra <b>'+getStringEdo(edo)+'</b>.');
         }
     }
